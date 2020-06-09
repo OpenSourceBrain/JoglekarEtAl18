@@ -12,7 +12,6 @@ import numpy as np
 import random as pyrand
 import time
  
-
 def gen_params(regime, gba, duration):    
     
     
@@ -28,7 +27,7 @@ def gen_params(regime, gba, duration):
            'probIntra' : .1,      # connection probability intra area
            'probInter' : .1,      # connection probability inter areas   
            'sigma'     : 3.,      # Noise 
-           'alpha'     : 4,       # gradient 
+           'alpha'     : 4.,       # gradient 
            'dlocal'    : 2 ,      # delays local 
            'speed'     : 3.5,     # axonal conduction velocity
            'lrvar'     : 0.1      # standard deviation delay long range
@@ -49,12 +48,12 @@ def gen_params(regime, gba, duration):
         if gba=='weak':
             para['wEI']      = .0375
             para['muEE']     = .0375
-            para['currval']       = (300*pA*R)/mV
+            para['currval']       = (300*pA*R)/mV 
         
         elif gba=='strong':    
             para['wEI']      = .05
             para['muEE']     = .05    
-            para['currval']       = (126*pA*R)/mV
+            para['currval']       = (126*pA*R)/mV 
       
         para['currdur']       = 1500
         
@@ -86,7 +85,7 @@ def gen_params(regime, gba, duration):
 def equations():
 
     eqs =Equations('''
-    dV/dt=(-(V-Vr) + Vext )*(1./tau) + stimulus(t,i)*(1./tau)+ 
+    dV/dt=(-(V-Vr) + stimulus(t,i) + Vext )*(1./tau)+ 
         (sigma*(1./tau)**0.5)*xi : volt (unless refractory)
 
     Vext : volt    
@@ -250,7 +249,6 @@ def createStimulus(para):
     timelen = len(aareaone)
     aareaonenet = np.tile(aareaone,(1,int(para['N']*para['Ne'])))
     
-    
     arest = np.zeros([timelen, int((para['NAreas']*para['N'])-para['N']*para['Ne'])])
     netarr = np.hstack((aareaonenet,arest))
     
@@ -269,20 +267,20 @@ def setMonitors(monitors,para):
     tempN=np.split(nets,[int(para["Ne"]*para["N"]),para["N"]],axis=1)[0:2]
     neuronsE=tempN[0].flatten()
     neuronsI=tempN[1].flatten()
-    
-    _,idxE,_=np.intersect1d(monitors.i,neuronsE,return_indices=True)
-    _,idxI,_=np.intersect1d(monitors.i,neuronsI,return_indices=True)
+    # Check what neurons in monitor are excitatory or inhibitory
+    idxE=np.isin(monitors.i[:],neuronsE)
+    idxI=np.isin(monitors.i[:],neuronsI)
     
     # Arrays to store neuron index and spiking time
-    monE=np.zeros((2,len(idxE)))
-    monI=np.zeros((2,len(idxI)))
+    monE=np.zeros((2,sum(idxE*1)))
+    monI=np.zeros((2,sum(idxI*1)))
     
     # neuron index              
     monE[0,:] = monitors.i[idxE]           
     monI[0,:] = monitors.i[idxI]              
-    # spinking time              
-    monE[1,:] = monitors.t[idxE]           
-    monI[1,:] = monitors.t[idxI]              
+    # spiking time              
+    monE[1,:] = monitors.t[idxE]/ms           
+    monI[1,:] = monitors.t[idxI]/ms              
     
     return monE,monI
 
@@ -299,7 +297,7 @@ def plotUtils(monE, para):
     Ni=para["N"]-(para["N"]*para["Ne"])
     
     for i in range(1,para["NAreas"]):
-        _,idxE,_=np.intersect1d(monE[0,:],nets[i],return_indices=True)
+        idxE=np.isin(monE[0,:],nets[i])
         monE[0,idxE]=monE[0,idxE]-((i*Ni)-1)
     
     return monE
@@ -347,17 +345,21 @@ def network(regime,gba,duration):
     mE=plotUtils(mE, para)
     
     return mE,mI,stimulus
-
-mE, _,stimulus = network('assynchronous','weak',1000)
-mE2, _,_ = network('assynchronous','strong',1000)
-
+    # return monitors
+    
+mE, mI,stimulus = network('synchronous','weak',600)
+mE2, _,_ = network('synchronous','strong',600)
 
 ################################### Plot #####################################
 plt.figure()
-subplot(131)
-plt.plot(mE[1,:]/ms, mE[0,:], '.',markersize=1)
-plt.plot([0, max(mE[1,:]/ms)], np.arange(3+1).repeat(2).reshape(-1, 2).T*1600, 'k-')
+subplot(121)
+plt.plot(mE[1,:], mE[0,:], '.',markersize=1)
+# linha preta
+plt.plot([0, max(mE[1,:])], np.arange(3+1).repeat(2).reshape(-1, 2).T*1600, 'k-')
+xlim(250,500)
+subplot(122)
+plt.plot(mE2[1,:], mE2[0,:], '.',markersize=1)
+plt.plot([0, max(mE[1,:])], np.arange(3+1).repeat(2).reshape(-1, 2).T*1600, 'k-')
+xlim(250,500)
 
-subplot(132)
-plt.plot(mE2[1,:]/ms, mE2[0,:], '.',markersize=1)
-plt.plot([0, max(mE[1,:]/ms)], np.arange(3+1).repeat(2).reshape(-1, 2).T*1600, 'k-')
+savefig('teste.png')
