@@ -284,12 +284,10 @@ def setMonitors(monitors,para):
     
     return monE,monI
 
-
-
 def plotUtils(monE, para):
     # Set the index of neurons for plotting
     
-     # all neurons 
+    # all neurons 
     index=np.arange(para["N"]*para["NAreas"])
     # neurons separated by networks
     nets=np.split(index,para["NAreas"])
@@ -303,9 +301,84 @@ def plotUtils(monE, para):
     return monE
 
 
-def network(regime,gba,duration):
+def firingRateArea(para,monitor,timeIni,timeEnd,window_width,dt):
     
-    para = gen_params(regime,gba,duration) 
+    # all neurons 
+    index=np.arange(para["N"]*para["NAreas"])
+    # neurons separated by networks
+    nets=np.array(np.split(index,para["NAreas"]))
+    
+    # store smoth Firing Rate
+    ntime=int(((timeEnd-timeIni)/ms)/(dt/ms))
+    frE_smooth=np.zeros((para["NAreas"],ntime))
+    frI_smooth=np.zeros((para["NAreas"],ntime))
+    # number of excitatory neurons
+    NE=int(para["N"]*para["Ne"])
+    
+    for i in range(para["NAreas"]):
+        
+        # Excitatory  
+        frE=firingRate(monitor,nets[i,:NE],timeIni,timeEnd,dt)
+        # Inhibitory
+        frI=firingRate(monitor,nets[i,NE:],timeIni,timeEnd,dt)
+        
+        # Smooth firing rate
+        if (window_width/ms)>0:
+            frE_smooth[i,:]=sliding_window(frE[1,:], window_width/ms, dt/ms)
+            frI_smooth[i,:]=sliding_window(frI[1,:], window_width/ms, dt/ms)
+        else: 
+            frE_smooth[i,:]=frE[1,:]
+            frI_smooth[i,:]=frI[1,:]
+            
+    # array with time         
+    time=frE[0,:]    
+    return frE_smooth,frI_smooth,time
+
+
+
+def firingRate(monitor,neuronsIdx,time_ini,time_end,dt):
+    
+    # array 2d to store firingrate rate and time
+    firing_rate=np.zeros((2,int(((time_end-time_ini)/ms)/(dt/ms))))
+    
+    # array with times
+    # vetor com tempos
+    firing_rate[0][:]=np.arange(time_ini/ms,time_end/ms,dt/ms)
+    
+    # list to store 
+    tempList=[]
+    
+    # loop over neurons Indexes
+    for idx in range(0,len(neuronsIdx)):
+        
+        tempList.extend(np.where(monitor.i==neuronsIdx[idx])[0])
+    
+    # spiking times
+    spk_times=np.sort(monitor.t[tempList]/ms)  
+
+    # spiking times and number of neurons that fired a spike
+    frTemp=np.unique(spk_times,return_counts=True)
+
+    # index of spiking times 
+    frTemp2=(np.round(frTemp[0]/(dt/ms))).astype(int)
+
+    # Firing Rate
+    firing_rate[1][frTemp2-(int(time_ini/dt))]=frTemp[1]* (1.0/dt/second)/shape(neuronsIdx)[0]
+
+    return firing_rate
+
+
+def sliding_window(serie,width,dt):
+    # width in ms   
+    width_dt = int(width / 2 / dt)*2 + 1
+    used_width = width_dt * dt
+    window = np.ones(width_dt)
+    
+    return np.convolve(serie, window * 1. / sum(window), mode='same')
+
+
+def network(regime,gba,para):
+    
     eqs = equations()
     sources,targets,wExc,wInh,delays=setConnections(para)
     taum,VextInput =setVextTau(para)
@@ -341,25 +414,46 @@ def network(regime,gba,duration):
     
     run(para['duration'], report='text')
 
-    mE,mI=setMonitors(monitors,para)
+    return monitors,monitorstatev
+
+
+def run_network(regime,gba,duration):
+    
+    # Parameters
+    para = gen_params(regime,gba,duration) 
+    # Run Network - Brian
+    monitor_spike, monitor_v = network(regime,gba,para)
+    # Divide monitor_spike in a monitor for excitatory and other for inhibitory
+    mE,mI=setMonitors(monitor_spike,para)
+    # Set index for plotting
     mE=plotUtils(mE, para)
+    # Firing rate 
+    frE,frI,tfr=firingRateArea(para,monitor_spike,0*ms,duration*ms,1*ms,defaultclock.dt)
     
-    return mE,mI,stimulus
-    # return monitors
+    return mE,frE,frI,tfr
+
+
     
-mE, mI,stimulus = network('synchronous','weak',600)
-mE2, _,_ = network('synchronous','strong',600)
+mE1,frE1,frI1,t1 = run_network('assynchronous','weak',600)
+mE2,frE2,frI2,t2 = run_network('assynchronous','strong',600)
 
 ################################### Plot #####################################
 plt.figure()
-subplot(121)
-plt.plot(mE[1,:], mE[0,:], '.',markersize=1)
-# linha preta
-plt.plot([0, max(mE[1,:])], np.arange(3+1).repeat(2).reshape(-1, 2).T*1600, 'k-')
+subplot(131)
+# raster plot
+plt.plot(mE1[1,:], mE1[0,:], '.',markersize=1)
+#  black line
+plt.plot([0, max(mE1[1,:])], np.arange(3+1).repeat(2).reshape(-1, 2).T*1600, 'k-')
 xlim(250,500)
-subplot(122)
+subplot(132)
+# raster plot
 plt.plot(mE2[1,:], mE2[0,:], '.',markersize=1)
-plt.plot([0, max(mE[1,:])], np.arange(3+1).repeat(2).reshape(-1, 2).T*1600, 'k-')
+# black line
+plt.plot([0, max(mE2[1,:])], np.arange(3+1).repeat(2).reshape(-1, 2).T*1600, 'k-')
 xlim(250,500)
+
+subplot(333)
+semilogy(np.max(frE1,axis=1),'-o',color='green')
+semilogy(np.max(frE2,axis=1),'-o',color='purple')
 
 savefig('teste.png')
