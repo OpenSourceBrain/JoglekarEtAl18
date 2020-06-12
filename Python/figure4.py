@@ -6,6 +6,7 @@ from scipy.io import loadmat
 import matplotlib.pyplot as plt
 import matplotlib
 from scipy import signal
+import os
 
 # To do
 # Peak gamma. You should change the input on V1
@@ -27,6 +28,7 @@ def parameters(areas):
     binx=20
     eta=0.2
     G=1.1
+    path=os.path.abspath(os.path.join(os.getcwd(), os.pardir))+'/Matlab/'
     
     # local and interlaminar coupling
     
@@ -59,7 +61,7 @@ def parameters(areas):
     inputbg=np.zeros((4,nAreas));
     inputbg[[0, 2],:]=0; #thalamus!
     
-    data=loadmat('subgraphData30.mat')
+    data=loadmat(path+'subgraphData.mat')
     fln=data['flnMat']
     sln=data['slnMat']
     fln=fln[0:nAreas,0:nAreas]
@@ -73,7 +75,7 @@ def parameters(areas):
     Wff=fln*sln
     Wfb=fln*(np.ones((nAreas,nAreas))-sln)
     
-    wiring=loadmat('subgraphWiring30.mat')
+    wiring=loadmat(path+'subgraphWiring29.mat')
     wires=wiring['wiring']
     wires=wires[0:nAreas,0:nAreas]
     delay= np.round(wires/(1500*dt)+1).astype(int)

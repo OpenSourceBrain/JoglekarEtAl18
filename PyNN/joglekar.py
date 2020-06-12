@@ -16,6 +16,7 @@ from pyNN.random import NumpyRNG, RandomDistribution
 from importlib import import_module
 from scipy.io import loadmat
 import numpy as np
+import os
 
 # Testing with Brian
 from pyNN.neuroml import *
@@ -36,22 +37,23 @@ from pyNN.neuroml import *
 setup()
 
 
+
 def setConnections():
-    
+    path = os.path.abspath(os.path.join(os.getcwd(), os.pardir))+'/Matlab/' #path to .mat files    
     #==================== Fln ==========================#
-    dataTemp = loadmat('./Connectome/subgraphData30.mat')
+    dataTemp = loadmat(path +'subgraphData.mat')
     conn=dataTemp['flnMat']
     # Remove area LIP (30). It is not used in Joglekar's paper
     conn=conn[0:29,0:29]
     connBin=(conn>0)*1  
     #==================== distances ====================#
-    dataTemp = loadmat('./Connectome/subgraphWiring30.mat')
+    dataTemp = loadmat(path +'subgraphWiring29.mat')
     # wiring is a 30x30 distance matrix with values given in mm
     dist=dataTemp['wiring']
     # Remove area LIP (30). It is not used in Joglekar's paper
     dist=dist[0:29,0:29]
     #==================== hierarchy ====================#
-    hierVals = loadmat('./Connectome/hierValspython.mat')
+    hierVals = loadmat(path +'hierValspython.mat')
     hierValsnew = hierVals['hierVals'][:]
     #hierarchy normalized. 
     hierNorm=hierValsnew/max(hierValsnew)

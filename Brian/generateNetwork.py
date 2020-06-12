@@ -5,18 +5,18 @@ from __future__ import division
 from brian2 import *
 prefs.codegen.target = 'auto'
 
-import matplotlib.pyplot as plt
 
 import scipy.io
 import numpy as np
 import random as pyrand
 import time
+import os
  
-def gen_params(regime, gba, duration):    
+def gen_params(n_areas,regime, gba, duration):    
     
     
     para= {'N'         : 2000,    # Number of neurons 
-           'NAreas'    : 3,       # Number of areas
+           'NAreas'    : n_areas, # Number of areas
            'Ne'        : 0.8,     # fraction of excitatory neurons
            'Vr'        : -70.*mV, # Membrane potential rest
            'Vreset'    : -60.*mV, # Membrane potential reset
@@ -30,12 +30,13 @@ def gen_params(regime, gba, duration):
            'alpha'     : 4.,       # gradient 
            'dlocal'    : 2 ,      # delays local 
            'speed'     : 3.5,     # axonal conduction velocity
-           'lrvar'     : 0.1      # standard deviation delay long range
+           'lrvar'     : 0.1,      # standard deviation delay long range
+           'path'      : os.path.abspath(os.path.join(os.getcwd(), os.pardir))+'/Matlab/' #path to .mat files
            }
 
     R=50*Mohm
     para['duration']    = duration*ms;   
-    if regime=='assynchronous':  
+    if regime=='asynchronous':  
     
         # general for assynchronous regime
         para['VextE']    = 14.2
@@ -118,17 +119,17 @@ def setConnections(para):
     neuronsI=tempN[1].flatten()
     
     #hierarchy values file 
-    hierVals = scipy.io.loadmat('hierValspython.mat')
+    hierVals = scipy.io.loadmat(para["path"]+'hierValspython.mat')
     hierValsnew = hierVals['hierVals'][:]
     hier=hierValsnew/max(hierValsnew)#hierarchy normalized. 
     hier=hier[:para["NAreas"]]
 
     #fln values file 
-    flnMatp = scipy.io.loadmat('efelenMatpython.mat')
+    flnMatp = scipy.io.loadmat(para["path"]+'efelenMatpython.mat')
     conn=flnMatp['flnMatpython'][:][:] #fln values..Cij is strength from j to i 
     conn=conn[:para["NAreas"],:para["NAreas"]]
 
-    distMatp = scipy.io.loadmat('subgraphWiring29.mat')
+    distMatp = scipy.io.loadmat(para["path"]+'subgraphWiring29.mat')
     distMat=distMatp['wiring'][:][:] #distances between areas values..
     delayMat = distMat/para['speed']
     delayMat=delayMat[:para["NAreas"],:para["NAreas"]]
@@ -417,10 +418,10 @@ def network(regime,gba,para):
     return monitors,monitorstatev
 
 
-def run_network(regime,gba,duration):
+def run_network(n_areas,regime,gba,duration):
     
     # Parameters
-    para = gen_params(regime,gba,duration) 
+    para = gen_params(n_areas,regime,gba,duration) 
     # Run Network - Brian
     monitor_spike, monitor_v = network(regime,gba,para)
     # Divide monitor_spike in a monitor for excitatory and other for inhibitory
@@ -434,26 +435,3 @@ def run_network(regime,gba,duration):
 
 
     
-mE1,frE1,frI1,t1 = run_network('assynchronous','weak',600)
-mE2,frE2,frI2,t2 = run_network('assynchronous','strong',600)
-
-################################### Plot #####################################
-plt.figure()
-subplot(131)
-# raster plot
-plt.plot(mE1[1,:], mE1[0,:], '.',markersize=1)
-#  black line
-plt.plot([0, max(mE1[1,:])], np.arange(3+1).repeat(2).reshape(-1, 2).T*1600, 'k-')
-xlim(250,500)
-subplot(132)
-# raster plot
-plt.plot(mE2[1,:], mE2[0,:], '.',markersize=1)
-# black line
-plt.plot([0, max(mE2[1,:])], np.arange(3+1).repeat(2).reshape(-1, 2).T*1600, 'k-')
-xlim(250,500)
-
-subplot(333)
-semilogy(np.max(frE1,axis=1),'-o',color='green')
-semilogy(np.max(frE2,axis=1),'-o',color='purple')
-
-savefig('teste.png')
