@@ -12,6 +12,11 @@ import random as pyrand
 import time
 import os
  
+rnd_seed = 1
+pyrand.seed(324823+rnd_seed)
+numpy.random.seed(324823+rnd_seed)
+
+
 def gen_params(n_areas,regime, gba, duration):    
     
     
@@ -27,10 +32,10 @@ def gen_params(n_areas,regime, gba, duration):
            'probIntra' : .1,      # connection probability intra area
            'probInter' : .1,      # connection probability inter areas   
            'sigma'     : 3.,      # Noise 
-           'alpha'     : 4.,       # gradient 
-           'dlocal'    : 2 ,      # delays local 
+           'alpha'     : 4.,      # gradient 
+           'dlocal'    : 2.,      # delays local 
            'speed'     : 3.5,     # axonal conduction velocity
-           'lrvar'     : 0.1,      # standard deviation delay long range
+           'lrvar'     : 0.1,     # standard deviation delay long range
            'path'      : os.path.abspath(os.path.join(os.getcwd(), os.pardir))+'/Matlab/' #path to .mat files
            }
 
@@ -60,7 +65,7 @@ def gen_params(n_areas,regime, gba, duration):
         
     elif regime=='synchronous':
         
-        # general for assynchronous regime
+        # general for synchronous regime
         para['muIE']     = .19 
         para['wII']      = .3
         para['wEE']      = .04
@@ -69,8 +74,8 @@ def gen_params(n_areas,regime, gba, duration):
         if gba=='weak':
             para['VextI']    = 14.0  
             para['VextE']    = 15.4
-            para['wEI']      = .056
-            para['muEE']     = .016
+            para['wEI']      = .56
+            para['muEE']     = .16
         elif gba=='strong':    
             para['VextI']    = 14.0  
             para['VextE']    = 16.0
@@ -78,7 +83,7 @@ def gen_params(n_areas,regime, gba, duration):
             para['muEE']     = .25    
         
         para['currdur']       = 80
-        para['currval']       = (200*pA*R)/mV
+        para['currval']       = (202*pA*R)/mV
 
     return para
 
@@ -173,23 +178,31 @@ def setConnections(para):
                 netsTarget=np.delete(nets,areaSource,0) 
                 # connections 
                 temp=np.random.rand(np.shape(netsTarget)[0],np.shape(netsTarget)[1])<para["probInter"]
-                # target neurons
-                targets.extend(netsTarget[temp])
-                # source neuron
-                sources.extend([neuron]*len(netsTarget[temp]))
-                # number of target neurons
-                nNeuronsTarget=np.sum(temp*1,1)
-                # Weight for long range connections
-                Weights=conn[np.delete(np.arange(para["NAreas"]),areaSource,0),areaSource] #### REVER ESSA ESTRUTURA talvez [,] seja melhor
-                # Store weights for long range connections
-                [tempWeights.extend((1+para["alpha"]*hier[i])*Weights[i].repeat(nNeuronsTarget[i])) for i in range(nNeuronsTarget.size)][0]
+                #target neurons
+                neuronsTarget=netsTarget[temp]
+                # store target neurons
+                targets.extend(neuronsTarget)
+                # store source neuron
+                sources.extend([neuron]*len(neuronsTarget))
+                
+                # Store weights and delays for long range connections
+                areasTarget=np.delete(np.arange(0,para["NAreas"]),areaSource).tolist()
+                neuronsPerTarget=sum(temp*1,axis=1)
+                k=0
+                for i in areasTarget:
+                    # Weights for long-range connections
+                    tempWeights.extend((1+para["alpha"]*hier[i])*conn[i,areaSource]*np.ones(neuronsPerTarget[k]))
+                    # delays for long-range connections
+                    delays.extend(np.random.normal(delayMat[i,areaSource],para['lrvar'] *delayMat[i,areaSource],neuronsPerTarget[k])) 
+                    k=k+1
+                    
                 # Convert list to array
                 tempWeights=np.asarray(tempWeights)
                 ############## Set Weights according to target ################
                 # Return idx for connection where the target is excitatory
-                _,idxE,_=np.intersect1d(netsTarget[temp],neuronsE,return_indices=True)
+                _,idxE,_=np.intersect1d(neuronsTarget,neuronsE,return_indices=True)
                 # Return idx for connection where the target is inhibitory
-                _,idxI,_=np.intersect1d(netsTarget[temp],neuronsI,return_indices=True)
+                _,idxI,_=np.intersect1d(neuronsTarget,neuronsI,return_indices=True)
                 # Adjust long range connections EE
                 tempWeights[idxE]=tempWeights[idxE]*para["muEE"]
                 # Adjust long range connections EI
@@ -197,13 +210,11 @@ def setConnections(para):
                 # Store weights
                 wExc.extend(tempWeights)
                 # Set at zero weights for inhibitory connections
-                wInh.extend([0]*np.sum(nNeuronsTarget))
-                # delays for long range connections
-                [delays.extend(np.random.normal(delayMat[i,areaSource],para['lrvar'] *delayMat[i,areaSource],nNeuronsTarget[i])) for i in range(nNeuronsTarget.size)][0]
+                wInh.extend([0]*len(neuronsTarget))
                 ################################################################
                     
             else:
-                 # array to store inhibitory weights for local connections
+                # array to store inhibitory weights for local connections
                 wInhTemp=np.ones(len(netTemp[tempConn]))
                 # I->E
                 _,idxE,_=np.intersect1d(netTemp[tempConn],neuronsE,return_indices=True)
@@ -216,9 +227,8 @@ def setConnections(para):
                 # local inhibitory weights
                 wInh.extend(wInhTemp) 
                 # delays for inhibitory local connections
-                #delays.extend(np.random.randn(len(netTemp[tempConn]))*par["delayStdRR"]+par["delayMeanRR"])
                 delays.extend(np.ones(len(netTemp[tempConn]))*para["dlocal"])
-                ###################################################################        
+                ##################################################################        
 
     return sources,targets,wExc,wInh,delays
 
@@ -378,7 +388,7 @@ def sliding_window(serie,width,dt):
     return np.convolve(serie, window * 1. / sum(window), mode='same')
 
 
-def network(regime,gba,para):
+def network(para):
     
     eqs = equations()
     sources,targets,wExc,wInh,delays=setConnections(para)
@@ -423,14 +433,13 @@ def run_network(n_areas,regime,gba,duration):
     # Parameters
     para = gen_params(n_areas,regime,gba,duration) 
     # Run Network - Brian
-    monitor_spike, monitor_v = network(regime,gba,para)
+    monitor_spike, monitor_v = network(para)
     # Divide monitor_spike in a monitor for excitatory and other for inhibitory
     mE,mI=setMonitors(monitor_spike,para)
     # Set index for plotting
     mE=plotUtils(mE, para)
     # Firing rate 
     frE,frI,tfr=firingRateArea(para,monitor_spike,0*ms,duration*ms,1*ms,defaultclock.dt)
-    
     return mE,frE,frI,tfr
 
 
