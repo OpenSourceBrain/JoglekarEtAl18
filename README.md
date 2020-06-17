@@ -9,17 +9,17 @@ https://www.cell.com/neuron/fulltext/S0896-6273(18)30152-1
 
 ### Versions
 - [Original Matlab code](https://github.com/OpenSourceBrain/JoglekarEtAl18/tree/master/Matlab)
- - Rate models and data visualization
+	- Rate models and data visualization
 - [Original Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/tree/master/Brian/OriginalCodes)
-    - Spiking neuronal networks
+	- Spiking neuronal networks
 - [Python codes](https://github.com/OpenSourceBrain/JoglekarEtAl18/tree/master/Python)
-    - Conversion from original matlab codes.
+	- Conversion from original matlab codes.
 - [Brian codes](https://github.com/OpenSourceBrain/JoglekarEtAl18/tree/master/Brian)
-    - Optimized version of original brian codes
+	- Optimized version of original brian codes
 - [PyNN codes](https://github.com/OpenSourceBrain/JoglekarEtAl18/tree/master/PyNN)
-    - Spiking neuronal networks
+	- Spiking neuronal networks
 - [NeuroML codes](https://github.com/OpenSourceBrain/JoglekarEtAl18/tree/master/NeuroML)
-    - Rate models
+	- Rate models
 
 #### Figure 1
 - [Original matlab code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Matlab/rishimodel_generatefigs_rate.m)
