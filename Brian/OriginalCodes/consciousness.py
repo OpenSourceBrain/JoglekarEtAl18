@@ -15,6 +15,7 @@ import random as pyrand
 
 from brian2 import defaultclock
 
+
 def testcons(seedval, curr):
 
   netwParams_hier = np.load('./netwParams_hiervals.npy')

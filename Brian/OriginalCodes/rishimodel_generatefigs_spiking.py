@@ -17,20 +17,20 @@ import numpy as np
 def cm2inch(value):
     return value/2.54
     
-rate = -2 #counting... asyn to synchronous case. 
+rate = -6 #counting... asyn to synchronous case. 
 
 arealist = ['V1','V2','V4','DP','MT','8m','5','8l','TEO','2','F1','STPc','7A','46d','10','9/46v','9/46d','F5','TEpd','PBr','7m','7B','F2','STPi','PROm','F7','8B','STPr','24c']
 
 #spiking model - synchronous regime 
 if rate == 0:
-    badprop=load('/Users/maddy/Dropbox/rishicode_maddy070115/allspikeallspikebadnew2.npy')
-    goodprop=load('/Users/maddy/Dropbox/rishicode_maddy070115/allspikegood.npy')
+    badprop=load('allspikeallspikebadnew2.npy')
+    goodprop=load('allspikegood.npy')
     duration = 500*ms
 
 #spiking model - asynchronous regime 
 if rate == 1:  
-    badprop = load('/Users/maddy/Dropbox/rishicode_maddy070115/allspikecur15_150msbadrate.npy') 
-    goodprop = load('/Users/maddy/Dropbox/rishicode_maddy070115/allspikecur6pt3_150msgoodrate.npy') 
+    badprop = load('allspikecur15_150msbadrate.npy') 
+    goodprop = load('allspikecur6pt3_150msgoodrate.npy') 
     duration = 650*ms
 
 #no of areas.. 
@@ -94,7 +94,7 @@ if rate > -1:
             monareaktimeallgood.append(monareaktimegood)
             u = u+1
             
-        print maxratebad[0],maxrategood[0]
+        print(maxratebad[0],maxrategood[0])
         
         #"""
         badpropfig = plt.figure(figsize=(cm2inch(5.5), cm2inch(8.5)))
@@ -244,12 +244,12 @@ if rate > -1:
                     for inlen in range(len(maxrateindexgood[0]) -1 ):
                         if (maxrateindexgood[0][inlen+1] - maxrateindexgood[0][inlen] > 1):
                             checkmultgood = 1
-                            print inlen, "inlen"
+                            print(inlen, "inlen")
                 if checkmultgood == 0:
                     maxrateindexgoodnet = maxrateindexgood[0][0]
                 if maxrateindexgoodnet < 300:
                     checkmultgood = 1    
-                    print "not prop", u
+                    print("not prop", u)
                 if checkmultgood == 0 : #len(maxrateindexgood[0])==1:
                     locofmaxindgood = np.where(arrindgood[0] == maxrateindexgoodnet )[0][0] 
                     #find closest indices on both sides. 
@@ -269,7 +269,7 @@ if rate > -1:
                     spantimegood[u,0] = locofmaxindgood
                     spanstarttimegood[u,0] = arrindgood[0][locnewminusnet]
             
-                    print u, spanstarttimegood[u,0]
+                    print(u, spanstarttimegood[u,0])
             
             #now find set of indices around max rate index lying in arrind.     
                 monareaktimeallgood.append(monareaktimegood)
@@ -287,12 +287,12 @@ if rate > -1:
                    listnotprop.append(u)
              
             
-            flnMatp = scipy.io.loadmat('/Users/maddy/anaconda2/efelenMatpython.mat')
+            flnMatp = scipy.io.loadmat('efelenMatpython.mat')
             flnMat=flnMatp['flnMatpython'][:][:] #fln values..Cij is strength from j to i 
             
             flnMat = flnMat*(1.*(flnMat > .02))
             
-            distMatp = scipy.io.loadmat('/Users/maddy/anaconda2/subgraphWiring29.mat')
+            distMatp = scipy.io.loadmat('subgraphWiring29.mat')
             distMat=distMatp['wiring'][:][:] #dist values..
             delayMat = distMat/3.5
             posfln = (flnMat.T > 0)*1.
@@ -364,12 +364,12 @@ if rate > -1:
             for a in range(29):
                 if a not in list1spike:
                     sumofsq = sumofsq + (output[0,a] - (spanstarttimegood[a:1+a]-spanstarttimegood[0]) )**2
-            print np.sqrt(sumofsq)
+            print(np.sqrt(sumofsq))
             #atte.savefig('/Users/maddy/Dropbox/rishicode_maddy070115/signal propagation paper/paper figures v2/main fig 5 onset2.pdf',bbox_inches='tight', pad_inches=0.05)
 
             #new added strong fln path
             #"""
-            flnMatp = scipy.io.loadmat('/Users/maddy/anaconda2/efelenMatpython.mat')
+            flnMatp = scipy.io.loadmat('efelenMatpython.mat')
             flnMat=flnMatp['flnMatpython'][:][:] #fln values..Cij is strength from j to i 
             
             posfln = (flnMat.T > 0)*1.
@@ -504,7 +504,7 @@ if rate == -1:
         ax.yaxis.set_ticks_position('left')
         e = np.sqrt(var(countingsave,axis = 1))
         plt.errorbar(np.arange(0,1.1,.125), sum(countingsave, axis=1)/5, e, linestyle='-', linewidth=lw,marker='.',markersize=3,color=(0.4660, 0.6740, 0.1880),capsize=2)
-            xlim(-.05,1.05)
+        xlim(-.05,1.05)
         plt.xticks([0,1], fontsize = 7)
         xticks([0, 1],['Asynchronous\n model','Synchronous\n model'],fontsize = 7)  
         ylim(0,.67)
@@ -519,7 +519,7 @@ if rate == -1:
 
 if rate == -2:
     #for 16 active areas consciousness figure -- vary input strength
-    diffbkandpeakratecurorig = np.load('/Users/maddy/Dropbox/rishicode_maddy070115/diffratecur_clust_orig.npy')
+    diffbkandpeakratecurorig = np.load('diffratecur_clust_orig.npy')
     diffbkandpeakratecur = diffbkandpeakratecurorig[:,1:]
     #areas not showing much activity -- asyn regime
     list1rate = ['6','9','10','11','15','17','19','22','23','24','25','27','28']
@@ -610,23 +610,23 @@ if rate == -2:
     d = dd > .15 #.25#     OR .2   
     ddd = d.sum(axis=0)
     #plt.plot(ddd,'.-')
-    print [i for i in ddd[1:] - ddd[:-1]]
-    print [i for i in ddd]
-    print [i for i in d[:,9]]
+    print([i for i in ddd[1:] - ddd[:-1]])
+    print([i for i in ddd])
+    print([i for i in d[:,9]])
     ct = 0
     dict16ar = {}
     for a in np.arange(0,29):
         if str(a) not in list1rate:
-            print ct, a, arealist[a]
+            print(ct, a, arealist[a])
             dict16ar[ct] = arealist[a]
             ct += 1
     for i in range(16):  
-        print i, [dict16ar[k] for k in np.where(d[:,i] > 0)[0]]
+        print(i, [dict16ar[k] for k in np.where(d[:,i] > 0)[0]])
 
-    #occlist = [1,1,2,2,2,2,2,3,3,3,3,3,3,3,3,3]
-    #parlist = [0,0,0,0,0,0,1,1,4,4,4,4,4,4,4,4]
-    #templist = [0,0,0,0,0,0,0,2,3,3,3,3,3,3,3,3]
-    #prelist = [0,0,0,0,0,0,0,0,1,4,6,6,6,6,6,6]
+    occlist = [1,1,2,2,2,2,2,3,3,3,3,3,3,3,3,3]
+    parlist = [0,0,0,0,0,0,1,1,4,4,4,4,4,4,4,4]
+    templist = [0,0,0,0,0,0,0,2,3,3,3,3,3,3,3,3]
+    prelist = [0,0,0,0,0,0,0,0,1,4,6,6,6,6,6,6]
 
     atte = plt.figure(figsize=(cm2inch(5.5), cm2inch(5.5)))
     ax = atte.add_subplot(1,1,1)
@@ -653,7 +653,7 @@ if rate == -2:
 
 if rate == -3:
     #consciousness figure no feedback.     
-    diffratecur_clust_orig_nofb = np.load('/Users/maddy/Dropbox/rishicode_maddy070115/diffratecur_clust_orig_nofb.npy')
+    diffratecur_clust_orig_nofb = np.load('diffratecur_clust_orig_nofb.npy')
     diffbkandpeakratecur = diffratecur_clust_orig_nofb[:,1:]
     #areas not propagating
     #async. regime case
@@ -728,7 +728,7 @@ if rate == -3:
 
 if rate == -5:
     #shuffle flns. 
-    diffbkandpeakratecurflnshuf2 = np.load('/Users/maddy/Dropbox/rishicode_maddy070115/diffratecur_clust_orig_flnshuf2.npy')
+    diffbkandpeakratecurflnshuf2 = np.load('diffratecur_clust_orig_flnshuf2.npy')
     diffbkandpeakratecur = diffbkandpeakratecurflnshuf2[:,1:]
     list1rate = ['6','9','10','11','15','17','19','22','23','24','25','27','28']    
     list1spike = ['10','15','22','28']
@@ -807,18 +807,18 @@ if rate == -6:
     
     for seed in seedlist: 
         if seed == 1:
-            allspikebadS1 = np.load('/Users/maddy/Dropbox/rishicode_maddy070115/allspike_S1inp_'+str(currbad)+'_seed_'+str(seed)+'.npy')
-            popratebadS1 = np.load('/Users/maddy/Dropbox/rishicode_maddy070115/poprate_curr_S1inp_'+str(currbad)+'_seed_'+str(seed)+'.npy')
+            allspikebadS1 = np.load('allspike_S1inp_'+str(currbad)+'_seed_'+str(seed)+'.npy')
+            popratebadS1 = np.load('poprate_curr_S1inp_'+str(currbad)+'_seed_'+str(seed)+'.npy')
         else:
-            allspikegoodS1 = np.load('/Users/maddy/Dropbox/rishicode_maddy070115/allspike_S1inp_'+str(currgood)+'_seed_'+str(seed)+'.npy')
-            poprategoodS1 = np.load('/Users/maddy/Dropbox/rishicode_maddy070115/poprate_curr_S1inp_'+str(currgood)+'_seed_'+str(seed)+'.npy')
+            allspikegoodS1 = np.load('allspike_S1inp_'+str(currgood)+'_seed_'+str(seed)+'.npy')
+            poprategoodS1 = np.load('poprate_curr_S1inp_'+str(currgood)+'_seed_'+str(seed)+'.npy')
     
     maxratebadS1, maxrategoodS1 = np.zeros([29,1]), np.zeros([29,1])
     for u in range(29):
         maxratebadS1[u,0] = max(popratebadS1[u,int(len(popratebadS1[0,:])/3):])
         maxrategoodS1[u,0] = max(poprategoodS1[u,int(len(poprategoodS1[0,:])/3):])
     
-    print (max(maxratebadS1), max(maxrategoodS1) )
+    print((max(maxratebadS1), max(maxrategoodS1) ))
     every, msz, lw, fsize = 1, .16, 1, 7
     
     #rasters

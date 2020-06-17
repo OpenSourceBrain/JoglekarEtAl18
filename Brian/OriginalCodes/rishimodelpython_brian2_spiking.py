@@ -11,17 +11,20 @@ import scipy.io
 import numpy as np
 import numpy.random
 import random as pyrand
+import os
+
+path = os.path.abspath(os.path.join(os.getcwd(), os.pardir))+'/Matlab/'
 
 #hierarchy values file 
-hierVals = scipy.io.loadmat('/Users/maddy/anaconda/hierValspython.mat')
+hierVals = scipy.io.loadmat(path+'hierValspython.mat')
 hierValsnew = hierVals['hierVals'][:]
 netwParams_hier=hierValsnew/max(hierValsnew)#hierarchy normalized. 
 
 #fln values file 
-flnMatp = scipy.io.loadmat('/Users/maddy/anaconda/efelenMatpython.mat')
+flnMatp = scipy.io.loadmat(path+'efelenMatpython.mat')
 flnMat=flnMatp['flnMatpython'][:][:] #fln values..Cij is strength from j to i 
 
-distMatp = scipy.io.loadmat('/Users/maddy/anaconda/subgraphWiring29.mat')
+distMatp = scipy.io.loadmat(path+'subgraphWiring29.mat')
 distMat=distMatp['wiring'][:][:] #distances between areas values..
 
 
