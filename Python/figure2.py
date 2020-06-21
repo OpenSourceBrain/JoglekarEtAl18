@@ -2,6 +2,9 @@ import numpy as np
 from scipy.io import loadmat
 import matplotlib.pyplot as plt
 import matplotlib
+import os
+
+
 
 def threshLinear(x,limiar):
         return np.maximum(x,limiar)
@@ -52,8 +55,11 @@ def rateModel(ini,wEE,wEI,wIE,wII,wEElr,wIElr,nSteps,dt,noise,areaidx,areaInput,
 
 # Parameters 
 
+# Path for .mat files
+path=os.path.abspath(os.path.join(os.getcwd(), os.pardir))+'/Matlab/'    
+
 # anatomical
-data=loadmat('subgraphData.mat')
+data=loadmat(path+'subgraphData.mat')
 nNodes=data['nNodes'][0,0]
 hier=np.squeeze(data['hierVals'])
 hierNorm=hier/max(hier)
