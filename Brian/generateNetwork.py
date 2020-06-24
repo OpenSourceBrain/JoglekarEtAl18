@@ -38,8 +38,30 @@ def gen_params(n_areas,regime, gba, duration):
            'lrvar'     : 0.1,     # standard deviation delay long range
            'path'      : os.path.abspath(os.path.join(os.getcwd(), os.pardir))+'/Matlab/' #path to .mat files
            }
+    
+    #hierarchy values file 
+    hierVals = scipy.io.loadmat(para["path"]+'hierValspython.mat')
+    hierValsnew = hierVals['hierVals'][:]
+    hier=hierValsnew/max(hierValsnew)#hierarchy normalized. 
+    para['hier']=hier[:para["NAreas"]]
 
+    #fln values file 
+    flnMatp = scipy.io.loadmat(para["path"]+'efelenMatpython.mat')
+    conn=flnMatp['flnMatpython'][:][:] #fln values..Cij is strength from j to i 
+    para['conn']=conn[:para["NAreas"],:para["NAreas"]]
+
+    distMatp = scipy.io.loadmat(para["path"]+'subgraphWiring29.mat')
+    distMat=distMatp['wiring'][:][:] #distances between areas values..
+    delayMat = distMat/para['speed']
+    para['delayMat']=delayMat[:para["NAreas"],:para["NAreas"]]
+    
+    
+    
+    para['k']=400
+    
+    # Membrane resitance
     R=50*Mohm
+    
     para['duration']    = duration*ms;   
     if regime=='asynchronous':  
     
@@ -54,12 +76,12 @@ def gen_params(n_areas,regime, gba, duration):
         if gba=='weak':
             para['wEI']      = .0375
             para['muEE']     = .0375
-            para['currval']       = (300*pA*R)/mV 
+            para['currval']  = (300*pA*R)/mV 
         
         elif gba=='strong':    
             para['wEI']      = .05
             para['muEE']     = .05    
-            para['currval']       = (126*pA*R)/mV 
+            para['currval']  = (126*pA*R)/mV 
       
         para['currdur']       = 1500
         
@@ -82,18 +104,19 @@ def gen_params(n_areas,regime, gba, duration):
             para['wEI']      = .98
             para['muEE']     = .25    
         
-        para['currdur']       = 80
-        para['currval']       = (202*pA*R)/mV
+        para['currdur']      = 80
+        para['currval']      = (202*pA*R)/mV
 
     return para
 
 
 def equations():
-
-    eqs =Equations('''
-    dV/dt=(-(V-Vr) + stimulus(t,i) + Vext )*(1./tau)+ 
-        (sigma*(1./tau)**0.5)*xi : volt (unless refractory)
-
+    
+    # Equations
+    eqsE = Equations('''
+    dV/dt=(-(V-Vr) + stimulus(t,i) + Vext )*(1./tau) + 
+    (sigma*(1./tau)**0.5)*xi : volt (unless refractory)
+    
     Vext : volt    
     tau: second
     sigma : volt
@@ -101,155 +124,22 @@ def equations():
     
     ''' )
 
-    return eqs
-
-
-def setConnections(para):
+    eqsI = Equations('''
+      dV/dt=(-(V-Vr) + Vext )*(1./tau) + 
+      (sigma*(1./tau)**0.5)*xi : volt (unless refractory)
+     
+    Vext : volt    
+    tau: second
+    sigma : volt
+    Vr:volt  
+      
+      ''')
     
-    sources=[] # to store the sources
-    targets=[] # to store the targets
-    wExc=[]    # to store the excitatory synaptic weights
-    wInh=[]    # to store the inhibitory synaptic weights 
-    delays=[]  # to store the delays
-    
-    # all neurons 
-    index=np.arange(para["N"]*para["NAreas"])
-    # neurons separated by networks
-    nets=np.split(index,para["NAreas"])
-    
-    # Array with all excitatory neurons
-    # Array with all inhibitory neurons
-    tempN=np.split(nets,[int(para["Ne"]*para["N"]),para["N"]],axis=1)[0:2]
-    neuronsE=tempN[0].flatten()
-    neuronsI=tempN[1].flatten()
-    
-    #hierarchy values file 
-    hierVals = scipy.io.loadmat(para["path"]+'hierValspython.mat')
-    hierValsnew = hierVals['hierVals'][:]
-    hier=hierValsnew/max(hierValsnew)#hierarchy normalized. 
-    hier=hier[:para["NAreas"]]
+    return eqsE,eqsI
 
-    #fln values file 
-    flnMatp = scipy.io.loadmat(para["path"]+'efelenMatpython.mat')
-    conn=flnMatp['flnMatpython'][:][:] #fln values..Cij is strength from j to i 
-    conn=conn[:para["NAreas"],:para["NAreas"]]
-
-    distMatp = scipy.io.loadmat(para["path"]+'subgraphWiring29.mat')
-    distMat=distMatp['wiring'][:][:] #distances between areas values..
-    delayMat = distMat/para['speed']
-    delayMat=delayMat[:para["NAreas"],:para["NAreas"]]
+def setStimulus(para):
     
-    for areaSource in range(para["NAreas"]):
-         
-        for neuron in nets[areaSource]:
-            
-            # Temp for weights
-            tempWeights=[] 
-            ######################### Recurrent connections ###################           
-            netTemp=nets[areaSource][:]
-            # to avoid autapses
-            netTemp=np.delete(netTemp,np.where(nets[areaSource]==neuron))
-            # compute connections
-            tempConn=np.random.rand(len(netTemp))<para["probIntra"]
-            # save sources
-            sources.extend([neuron]*len(netTemp[tempConn]))
-            # save targets
-            targets.extend(netTemp[tempConn])
-            
-            ##################### Set Weights #################################
-            if neuron<int(para["Ne"]*(nets[0][-1]+1)+nets[areaSource][0]): # Excitatory
-                
-                # array to store excitatory weights for local connections
-                wExcTemp=np.ones(len(netTemp[tempConn]))
-                # E->E
-                _,idxE,_=np.intersect1d(netTemp[tempConn],neuronsE,return_indices=True)
-                wExcTemp[idxE]=np.ones(len(wExcTemp[idxE]))*(1+para["alpha"]*hier[areaSource])*para["wEE"]
-                # E->I 
-                _,idxI,_=np.intersect1d(netTemp[tempConn],neuronsI,return_indices=True)
-                wExcTemp[idxI]=np.ones(len(wExcTemp[idxI]))*(1+para["alpha"]*hier[areaSource])*para["wIE"]
-                # local excitatory weights
-                wExc.extend(wExcTemp)
-                # set at zero the inhibitory connections between these neurons     
-                wInh.extend([0]*len(netTemp[tempConn]))
-                # delays for excitatory local connections
-                delays.extend(np.ones(len(netTemp[tempConn]))*para["dlocal"])
-                ############################### Long Range ###################
-                # delete area source from array of areas
-                netsTarget=np.delete(nets,areaSource,0) 
-                # connections 
-                temp=np.random.rand(np.shape(netsTarget)[0],np.shape(netsTarget)[1])<para["probInter"]
-                #target neurons
-                neuronsTarget=netsTarget[temp]
-                # store target neurons
-                targets.extend(neuronsTarget)
-                # store source neuron
-                sources.extend([neuron]*len(neuronsTarget))
-                
-                # Store weights and delays for long range connections
-                areasTarget=np.delete(np.arange(0,para["NAreas"]),areaSource).tolist()
-                neuronsPerTarget=sum(temp*1,axis=1)
-                k=0
-                for i in areasTarget:
-                    # Weights for long-range connections
-                    tempWeights.extend((1+para["alpha"]*hier[i])*conn[i,areaSource]*np.ones(neuronsPerTarget[k]))
-                    # delays for long-range connections
-                    delays.extend(np.random.normal(delayMat[i,areaSource],para['lrvar'] *delayMat[i,areaSource],neuronsPerTarget[k])) 
-                    k=k+1
-                    
-                # Convert list to array
-                tempWeights=np.asarray(tempWeights)
-                ############## Set Weights according to target ################
-                # Return idx for connection where the target is excitatory
-                _,idxE,_=np.intersect1d(neuronsTarget,neuronsE,return_indices=True)
-                # Return idx for connection where the target is inhibitory
-                _,idxI,_=np.intersect1d(neuronsTarget,neuronsI,return_indices=True)
-                # Adjust long range connections EE
-                tempWeights[idxE]=tempWeights[idxE]*para["muEE"]
-                # Adjust long range connections EI
-                tempWeights[idxI]=tempWeights[idxI]*para["muIE"]
-                # Store weights
-                wExc.extend(tempWeights)
-                # Set at zero weights for inhibitory connections
-                wInh.extend([0]*len(neuronsTarget))
-                ################################################################
-                    
-            else:
-                # array to store inhibitory weights for local connections
-                wInhTemp=np.ones(len(netTemp[tempConn]))
-                # I->E
-                _,idxE,_=np.intersect1d(netTemp[tempConn],neuronsE,return_indices=True)
-                wInhTemp[idxE]=np.ones(len(wInhTemp[idxE]))*para["wEI"]*-1
-                # I->I 
-                _,idxI,_=np.intersect1d(netTemp[tempConn],neuronsI,return_indices=True)
-                wInhTemp[idxI]=np.ones(len(wInhTemp[idxI]))*para["wII"]*-1
-                # set at zero the excitatory connections between these neurons
-                wExc.extend([0]*len(netTemp[tempConn]))
-                # local inhibitory weights
-                wInh.extend(wInhTemp) 
-                # delays for inhibitory local connections
-                delays.extend(np.ones(len(netTemp[tempConn]))*para["dlocal"])
-                ##################################################################        
-
-    return sources,targets,wExc,wInh,delays
-
-
-def setVextTau(para):
-    
-    tau=[]
-    Vext=[]
-    
-    for i in range(para['NAreas']):
-        tau.extend(np.ones(int(para['N']*para['Ne']))*para['taumE']) 
-        tau.extend(np.ones(int(para['N']-para['N']*para['Ne']))*para['taumI'])
-        
-        Vext.extend(np.ones(int(para['N']*para['Ne']))*para['VextE']) 
-        Vext.extend(np.ones(int(para['N']-para['N']*para['Ne']))*para['VextI'])
- 
-    return tau,Vext
-
-
-def createStimulus(para):
-    
+    # Stimulus
     netsteps = round(para['duration']/defaultclock.dt)
     
     a1 = np.zeros([3000,1]) #input given to v1 for fixed duration. 
@@ -257,175 +147,132 @@ def createStimulus(para):
     a3 = np.zeros([  int(netsteps - 3000 - para['currdur']) , 1])
     aareaone = np.vstack((a1,a2,a3)) 
 
+
     timelen = len(aareaone)
-    aareaonenet = np.tile(aareaone,(1,int(para['N']*para['Ne'])))
-    
-    arest = np.zeros([timelen, int((para['NAreas']*para['N'])-para['N']*para['Ne'])])
+    excotherareas = para['k']*4*(para['NAreas']-1)
+    aareaonenet = np.tile(aareaone,(1,para['k']*4))
+    arest = np.zeros([timelen, excotherareas])
     netarr = np.hstack((aareaonenet,arest))
     
-    stim = TimedArray(netarr*mV, dt=defaultclock.dt)
-
-    return stim
-
-def setMonitors(monitors,para):
-
-    # all neurons 
-    index=np.arange(para["N"]*para["NAreas"])
-    # neurons separated by networks
-    nets=np.split(index,para["NAreas"])
-    # Array with all excitatory neurons
-    # Array with all inhibitory neurons
-    tempN=np.split(nets,[int(para["Ne"]*para["N"]),para["N"]],axis=1)[0:2]
-    neuronsE=tempN[0].flatten()
-    neuronsI=tempN[1].flatten()
-    # Check what neurons in monitor are excitatory or inhibitory
-    idxE=np.isin(monitors.i[:],neuronsE)
-    idxI=np.isin(monitors.i[:],neuronsI)
+    stimulus = TimedArray(netarr*mV, dt=defaultclock.dt)
     
-    # Arrays to store neuron index and spiking time
-    monE=np.zeros((2,sum(idxE*1)))
-    monI=np.zeros((2,sum(idxI*1)))
-    
-    # neuron index              
-    monE[0,:] = monitors.i[idxE]           
-    monI[0,:] = monitors.i[idxI]              
-    # spiking time              
-    monE[1,:] = monitors.t[idxE]/ms           
-    monI[1,:] = monitors.t[idxI]/ms              
-    
-    return monE,monI
+    return stimulus
 
-def plotUtils(monE, para):
-    # Set the index of neurons for plotting
-    
-    # all neurons 
-    index=np.arange(para["N"]*para["NAreas"])
-    # neurons separated by networks
-    nets=np.split(index,para["NAreas"])
-    # number of inhibitory neurons
-    Ni=para["N"]-(para["N"]*para["Ne"])
-    
-    for i in range(1,para["NAreas"]):
-        idxE=np.isin(monE[0,:],nets[i])
-        monE[0,idxE]=monE[0,idxE]-((i*Ni)-1)
-    
-    return monE
-
-
-def firingRateArea(para,monitor,timeIni,timeEnd,window_width,dt):
-    
-    # all neurons 
-    index=np.arange(para["N"]*para["NAreas"])
-    # neurons separated by networks
-    nets=np.array(np.split(index,para["NAreas"]))
-    
-    # store smoth Firing Rate
-    ntime=int(((timeEnd-timeIni)/ms)/(dt/ms))
-    frE_smooth=np.zeros((para["NAreas"],ntime))
-    frI_smooth=np.zeros((para["NAreas"],ntime))
-    # number of excitatory neurons
-    NE=int(para["N"]*para["Ne"])
-    
-    for i in range(para["NAreas"]):
-        
-        # Excitatory  
-        frE=firingRate(monitor,nets[i,:NE],timeIni,timeEnd,dt)
-        # Inhibitory
-        frI=firingRate(monitor,nets[i,NE:],timeIni,timeEnd,dt)
-        
-        # Smooth firing rate
-        if (window_width/ms)>0:
-            frE_smooth[i,:]=sliding_window(frE[1,:], window_width/ms, dt/ms)
-            frI_smooth[i,:]=sliding_window(frI[1,:], window_width/ms, dt/ms)
-        else: 
-            frE_smooth[i,:]=frE[1,:]
-            frI_smooth[i,:]=frI[1,:]
-            
-    # array with time         
-    time=frE[0,:]    
-    return frE_smooth,frI_smooth,time
-
-
-
-def firingRate(monitor,neuronsIdx,time_ini,time_end,dt):
-    
-    # array 2d to store firingrate rate and time
-    firing_rate=np.zeros((2,int(((time_end-time_ini)/ms)/(dt/ms))))
-    
-    # array with times
-    # vetor com tempos
-    firing_rate[0][:]=np.arange(time_ini/ms,time_end/ms,dt/ms)
-    
-    # list to store 
-    tempList=[]
-    
-    # loop over neurons Indexes
-    for idx in range(0,len(neuronsIdx)):
-        
-        tempList.extend(np.where(monitor.i==neuronsIdx[idx])[0])
-    
-    # spiking times
-    spk_times=np.sort(monitor.t[tempList]/ms)  
-
-    # spiking times and number of neurons that fired a spike
-    frTemp=np.unique(spk_times,return_counts=True)
-
-    # index of spiking times 
-    frTemp2=(np.round(frTemp[0]/(dt/ms))).astype(int)
-
-    # Firing Rate
-    firing_rate[1][frTemp2-(int(time_ini/dt))]=frTemp[1]* (1.0/dt/second)/shape(neuronsIdx)[0]
-
-    return firing_rate
-
-
-def sliding_window(serie,width,dt):
-    # width in ms   
-    width_dt = int(width / 2 / dt)*2 + 1
-    used_width = width_dt * dt
-    window = np.ones(width_dt)
-    
-    return np.convolve(serie, window * 1. / sum(window), mode='same')
 
 
 def network(para):
     
-    eqs = equations()
-    sources,targets,wExc,wInh,delays=setConnections(para)
-    taum,VextInput =setVextTau(para)
-    stimulus=createStimulus(para)
+    # Equations
+    eqsE,eqsI=equations()
     
-    Ntotal=int(para['N']*para['NAreas'])
+    # Stimulus
+    stimulus=setStimulus(para)
+    
+    
+    # Total number of excitatory neurons
+    NE=int(para['NAreas']*para['N']*para['Ne'])
+    
+    # Total number of inhibitory neurons
+    NI=int((para['NAreas']*para['N'])-NE)
+    
+    # Parameters
     paraVt     = para['Vt']
     paraVreset = para['Vreset']
-    P = NeuronGroup(Ntotal, method='euler', model=eqs, threshold='V > paraVt', reset='V=paraVreset', refractory=para['tref']*ms)
     
-    # Excitatory Synapses (RR and LR)
-    CE = Synapses(P, P, model='w : volt',on_pre='V+=w')
-    CE.connect(i=sources, j=targets)
-    CE.w=wExc*mV
-    CE.delay=delays*ms
+    # Neuron groups
+    E = NeuronGroup(N=NE, method='euler',model=eqsE, threshold='V > paraVt', reset='V=paraVreset', refractory=para['tref']*ms)
+    I = NeuronGroup(N=NI, method='euler',model=eqsI, threshold='V > paraVt', reset='V=paraVreset', refractory=para['tref']*ms)
+
+    #E I across areas
+    Exc, Inh = [], []
+    Exc = [ E[y*(para['k']*4):(y+1)*(para['k']*4)] for y in range(para['NAreas'])]
+    Inh = [ I[z*(para['k']):(z+1)*(para['k'])] for z in range(para['NAreas'])] 
     
-    # Inhibitory Synapses (RR)
-    CI = Synapses(P, P, model='w : volt',on_pre='V+=w')
-    CI.connect(i=sources, j=targets)
-    CI.w=wInh*mV
-    CI.delay=delays*ms
+    # List to store connections
+    Exc_C_loc  = [None]*para['NAreas']
+    Inh_C_loc  = [None]*para['NAreas']
+    EtoI_C_loc = [None]*para['NAreas']
+    ItoE_C_loc = [None]*para['NAreas']
+
+    Exc_C_lr_fromi =[]
+    EtoI_C_lr_fromi =[]
+
+    #set up synaptic connections 
+    h = 0
+    while h < para['NAreas']:
+      #print(h)  #local. 
+      Exc_C_loc[h] = Synapses(Exc[h], Exc[h], 'w:volt', delay = para["dlocal"]*ms, on_pre='V+=w')  
+      Inh_C_loc[h] = Synapses(Inh[h], Inh[h], 'w:volt', delay = para["dlocal"]*ms, on_pre='V+= w ')  
+      EtoI_C_loc[h] = Synapses(Exc[h], Inh[h],'w:volt', delay = para["dlocal"]*ms, on_pre='V+= w ')    
+      ItoE_C_loc[h] = Synapses(Inh[h], Exc[h],'w:volt', delay = para["dlocal"]*ms, on_pre='V+= w ') 
+          
+      Exc_C_loc[h].connect(p =  para["probIntra"]) 
+      Inh_C_loc[h].connect(p =  para["probIntra"]) 
+      EtoI_C_loc[h].connect(p = para["probIntra"]) 
+      ItoE_C_loc[h].connect(p = para["probIntra"]) 
+      
+      Exc_C_loc[h].w = (1+para["alpha"]*para["hier"][h])*para['wEE']*mV
+      Inh_C_loc[h].w = -para['wII']*mV
+      EtoI_C_loc[h].w = (1+para["alpha"]*para["hier"][h])*para['wIE']*mV
+      ItoE_C_loc[h].w = -para['wEI']*mV
+      
+      j = 0 #long range to j. 
+      while j < para['NAreas']:
+        if j!= h:  
+            #print j
+            exc_lr_itoj, etoi_lr_itoj = None, None
+    
+            exc_lr_itoj = Synapses(Exc[h], Exc[j], 'w:volt', on_pre='V+= w ') 
+            etoi_lr_itoj = Synapses(Exc[h], Inh[j], 'w:volt', on_pre='V+= w ')
+                    
+            exc_lr_itoj.connect(p = para["probInter"])    
+            etoi_lr_itoj.connect(p = para["probInter"])  
+            
+            exc_lr_itoj.w =  (1 + para["alpha"] * para["hier"][j]) * para['muEE'] * para["conn"][j,h]*mV
+            etoi_lr_itoj.w = (1 + para["alpha"] * para["hier"][j]) * para['muIE'] * para["conn"][j,h]*mV
+            
+            # Mean for delay distribution 
+            meanlr = para["delayMat"][j,h]
+            # Standard deviation for delay distribution
+            varlr =  para['lrvar']*meanlr
+            
+            exc_lr_itoj.delay = np.random.normal(meanlr,varlr,len(exc_lr_itoj.w))*ms
+            etoi_lr_itoj.delay = np.random.normal(meanlr,varlr,len(etoi_lr_itoj.w))*ms
+            
+            Exc_C_lr_fromi.append(exc_lr_itoj)
+            EtoI_C_lr_fromi.append(etoi_lr_itoj)
+            
+        j = j + 1       
+      h = h + 1
+
     
     # Initial conditions
-    P.V     = para['Vr'] + rand(len(P)) * (para['Vt'] - para['Vr'])
-    P.tau   = taum*ms
-    P.Vext  = VextInput*mV
-    P.sigma = para['sigma']*mV
-    P.Vr = para['Vr']
+    E.V = para['Vr'] + rand(len(E)) * (para['Vt'] - para['Vr'])
+    E.tau   = para['taumE']*ms
+    E.Vext  = para['VextE']*mV
+    E.sigma = para['sigma']*mV
+    E.Vr = para['Vr']
     
-    #monitor system behavior -- spikes and state variables. 
-    monitors = SpikeMonitor(P)
-    monitorstatev = StateMonitor(P,'V',record=True)
-    
-    run(para['duration'], report='text')
+    I.V = para['Vr'] + rand(len(I)) * (para['Vt'] - para['Vr'])
+    I.tau   = para['taumI']*ms
+    I.Vext  = para['VextI']*mV
+    I.sigma = para['sigma']*mV
+    I.Vr = para['Vr']
 
-    return monitors,monitorstatev
+    
+    # Monitors 
+    monitorsE = SpikeMonitor(E)
+    monitorsI = SpikeMonitor(I)
+
+    # Network    
+    net = Network(E,I,Exc_C_loc,EtoI_C_loc,ItoE_C_loc,Inh_C_loc,Exc_C_lr_fromi,EtoI_C_lr_fromi,monitorsE,monitorsI)
+
+    net.store()
+    print("net stored")
+    net.run(para['duration'], report='text')
+    
+    
+    return monitorsE, monitorsI
 
 
 def run_network(n_areas,regime,gba,duration):
@@ -434,13 +281,76 @@ def run_network(n_areas,regime,gba,duration):
     para = gen_params(n_areas,regime,gba,duration) 
     # Run Network - Brian
     monitor_spike, monitor_v = network(para)
-    # Divide monitor_spike in a monitor for excitatory and other for inhibitory
-    mE,mI=setMonitors(monitor_spike,para)
-    # Set index for plotting
-    mE=plotUtils(mE, para)
-    # Firing rate 
-    frE,frI,tfr=firingRateArea(para,monitor_spike,0*ms,duration*ms,1*ms,defaultclock.dt)
-    return mE,frE,frI,tfr
+    
+    return monitor_spike
 
+
+def firingRate(N,goodprop,badprop,duration):
+
+    binsize = 10*ms
+    stepsize =  1*ms  
+    
+    # Store maximum firing rate for each area
+    maxratebad  = np.empty([N,1])
+    maxrategood = np.empty([N,1])
+    
+    # sort net spikes
+    netspikebad = len(badprop)
+    netspikegood= len(goodprop)
+    
+    badpropsorted = badprop[badprop[:,1].argsort(),]
+    goodpropsorted = goodprop[goodprop[:,1].argsort(),]
+            
+    netbinno = int( 1+(duration/ms)-(binsize/ms))
+    popratebad = np.empty([N,netbinno ])
+    poprategood = np.empty([N,netbinno ])
+            
+     
+    countbad = 0
+    countgood = 0#for each spike. 
+            
+    monareaktimeallbad = []
+    monareaktimeallgood = []
+                    
+    for u in range(N):
+        monareaktimebad = []
+        monareaktimegood = []
+        
+        while((countbad < netspikebad) and (badpropsorted[countbad,1]<1600*(u+1)) ):
+          monareaktimebad.append(badpropsorted[countbad,0])#append spike times for each area.
+          countbad = countbad + 1
+          
+        while((countgood < netspikegood) and (goodpropsorted[countgood,1]<1600*(u+1)) ):
+          monareaktimegood.append(goodpropsorted[countgood,0])#append spike times for each area.
+          countgood = countgood + 1
+          
+        valsbad = np.histogram(monareaktimebad, bins=int(duration/stepsize))
+        valsgood = np.histogram(monareaktimegood, bins=int(duration/stepsize))
+        
+        valszerobad = valsbad[0]
+        valszerogood = valsgood[0]
+    
+        astep = binsize/(1*ms)
+        
+        valsnewbad = np.zeros(netbinno)
+        valsnewgood = np.zeros(netbinno)
+        
+        acount = 0
+        while acount < netbinno:        
+            valsnewbad[acount] = sum(valszerobad[int(acount):int(acount+astep)])
+            valsnewgood[acount] = sum(valszerogood[int(acount):int(acount+astep)])
+            acount=acount+1
+    
+        valsratebad = valsnewbad*((1000*ms/binsize) /(1600) ) # divide by no of neurons per E pop. 
+        valsrategood = valsnewgood*((1000*ms/binsize) /(1600) )    
+        popratebad[u,:], poprategood[u,:] = valsratebad, valsrategood    
+        
+        #compute population firing rates. 
+        
+        maxratebad[u,0] = max(valsratebad[int(len(valsratebad)/3):])
+        maxrategood[u,0] = max(valsrategood[int(len(valsrategood)/3):])
+        
+            
+    return maxratebad, maxrategood
 
     
