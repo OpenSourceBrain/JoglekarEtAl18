@@ -40,9 +40,9 @@ https://www.cell.com/neuron/fulltext/S0896-6273(18)30152-1
 
 - [Original Brian code - generate data](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/OriginalCodes/rishimodelpython_brian2_spiking.py)
 - [Original Brian code - visualizataion](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/OriginalCodes/rishimodel_generatefigs_spiking.py)
-- [Figure5B-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figure5B.py)
-- [Figure5C-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figure5C.py)*
-- [Figure5E-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figure5E.py)*
+- [Figure5B-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figures.py)
+- [Figure5C-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figures.py)
+- [Figure5E-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figures.py)
 - [Figure5F-Original Matlab Code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Matlab/rishimodel_generatefigs_rate.m)
 - [Figure5F-Python Code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Python/figure5F.py)
 - [Figure5G-Original Matlab Code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Matlab/rishimodel_generatefigs_rate.m)
@@ -52,9 +52,9 @@ https://www.cell.com/neuron/fulltext/S0896-6273(18)30152-1
 
 - [Original Brian code - generate data](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/OriginalCodes/rishimodelpython_brian2_spiking.py)
 - [Original Brian code - visualizataion](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/OriginalCodes/rishimodel_generatefigs_spiking.py)
-- [Figure6A-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figure6A.py)
-- [Figure6B-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figure6B.py)*
-- [Figure6D-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figure6D.py)*
+- [Figure6A-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figures.py)
+- [Figure6B-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figures.py)
+- [Figure6D-Brian code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/figures.py)
 
 #### Figure 7
 
