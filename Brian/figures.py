@@ -75,7 +75,7 @@ N=int(sys.argv[1])
 figure=str(sys.argv[2])
 saveData=str(sys.argv[3])
 saveFigure=str(sys.argv[4])
-
+useSaveData=str(sys.argv[4])
 
 # Path
 path = os.path.abspath(os.getcwd())
@@ -88,7 +88,7 @@ if figure== '5B':
     file= path+'/files/spikes_figure'+figure+'_'+str(N)+'areas.txt'
     duration=800*ms
     
-    if os.path.isfile(file)==False:
+    if useSaveData!='yes':
         monitors = run_network(N,'asynchronous','weak',duration/ms)
         xValues=monitors.t/ms
         yValues=monitors.i
@@ -108,7 +108,7 @@ elif figure== '5C':
     file= path+'/files/spikes_figure'+figure+'_'+str(N)+'areas.txt'
     duration=800*ms
     
-    if os.path.isfile(file)==False:
+    if useSaveData!='yes':
         monitors = run_network(N,'asynchronous','strong',duration/ms)
         xValues=monitors.t/ms
         yValues=monitors.i
@@ -130,7 +130,7 @@ elif figure== '5E':
     
     duration=800*ms
     
-    if os.path.isfile(file1)==False:
+    if useSaveData!='yes':
         monitorsBad = run_network(N,'asynchronous','weak',duration/ms)
         bad=np.column_stack([monitorsBad.t/ms,monitorsBad.i])
         if saveData== 'yes':
@@ -138,7 +138,7 @@ elif figure== '5E':
     else:
         bad=np.loadtxt(file1)
         
-    if os.path.isfile(file2)==False:
+    if useSaveData!='yes':
         monitorsGood = run_network(N,'asynchronous','strong',duration/ms)
         good=np.column_stack([monitorsGood.t/ms,monitorsGood.i])
         if saveData== 'yes':
@@ -155,7 +155,7 @@ elif figure== '6A':
     file= path+'/files/spikes_figure'+figure+'_'+str(N)+'areas.txt'
     duration=440*ms
     
-    if os.path.isfile(file)==False:
+    if useSaveData!='yes':
         monitors = run_network(N,'synchronous','weak',duration/ms)
         xValues=monitors.t/ms
         yValues=monitors.i
@@ -176,7 +176,7 @@ elif figure== '6B':
     file= path+'/files/spikes_figure'+figure+'_'+str(N)+'areas.txt'
     duration=440*ms
     
-    if os.path.isfile(file)==False:
+    if useSaveData!='yes':
         monitors = run_network(N,'synchronous','strong',duration/ms)
         xValues=monitors.t/ms
         yValues=monitors.i
@@ -198,7 +198,7 @@ elif figure== '6D':
     
     duration=440*ms
     
-    if os.path.isfile(file1)==False:
+    if useSaveData!='yes':
         monitorsBad = run_network(N,'synchronous','weak',duration/ms)
         bad=np.column_stack([monitorsBad.t/ms,monitorsBad.i])
         if saveData== 'yes':
@@ -206,7 +206,7 @@ elif figure== '6D':
     else:
         bad=np.loadtxt(file1)
         
-    if os.path.isfile(file2)==False:
+    if useSaveData!='yes':
         monitorsGood = run_network(N,'synchronous','strong',duration/ms)
         good=np.column_stack([monitorsGood.t/ms,monitorsGood.i])
         if saveData== 'yes':

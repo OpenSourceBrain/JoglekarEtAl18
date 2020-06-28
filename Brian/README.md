@@ -1,7 +1,7 @@
 
 ### Brian codes
 
-python figures.py arg1 arg2 arg3 arg4
+python figures.py arg1 arg2 arg3 arg4 arg5
 
     arg1: number of areas ( input : a integer value less than 30 )
 
@@ -10,6 +10,8 @@ python figures.py arg1 arg2 arg3 arg4
     arg3: save data (input: 'yes' or 'no')
 
     arg4: save figure (input: 'yes' or 'no')
+
+    arg5: use saved data to generate figure (input: 'yes' or 'no')	
 
 Files and figures will be saved in folder files and figures, respectively.
 
