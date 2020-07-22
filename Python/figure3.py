@@ -289,4 +289,4 @@ ax.set_ylabel('Maximum rate in 24c (Hz)', fontsize='large')
 ax.set_xlabel('Global E to E coupling', fontsize='large')  
 
 
-
+plt.show()

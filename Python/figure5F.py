@@ -33,3 +33,5 @@ plt.ylim([0, 70])
 plt.xlim([10**-6, 3])
 plt.ylabel('FLN Counts')
 plt.xscale('log')
+
+plt.show()

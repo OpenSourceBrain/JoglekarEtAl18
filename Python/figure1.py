@@ -3,7 +3,7 @@ import scipy.linalg as la
 import matplotlib.pyplot as plt
 import os.path
 import matplotlib
-
+import sys
 #============================= Rate  Model ===================================#
 def firingRate(A,trange,tstep):
     # A       - connectivity matrix
@@ -19,6 +19,9 @@ def firingRate(A,trange,tstep):
         state[:,t+1]=np.maximum(state[:,t] + tstep*A@state[:,t] , tmpZeros.T)                   
     
     return state
+
+saveData=str(sys.argv[1])
+useSaveData=str(sys.argv[2])
 
 #=================== Figure 1B in the paper ==================================#
 
@@ -60,7 +63,9 @@ eigA = np.zeros((len(wEIrange),len(wEErange)))          # eigenvalues
 
 # Run simulation for range of synaptic weights
 
-if not os.path.isfile('maxamplocal.npy'):
+if useSaveData== 'yes':
+    maxamplocal=np.load('maxamplocal.npy')
+else:
     for i in range(len(wEErange)):
         print(i)
         
@@ -87,9 +92,9 @@ if not os.path.isfile('maxamplocal.npy'):
                 maxamplocal[j,i]=-5
 
     # Save file
-    np.save('maxamplocal.npy', maxamplocal)
-else:
-    maxamplocal=np.load('maxamplocal.npy')
+    if saveFigure== 'yes':            
+        np.save('maxamplocal.npy', maxamplocal)
+
 
     
 #=================================  Panel ===================================#

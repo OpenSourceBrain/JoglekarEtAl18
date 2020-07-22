@@ -31,9 +31,9 @@ def rasterPlot(xValues,yValues,duration,figure,N,saveFigure):
     plt.ylabel('Area')
     plt.yticks(np.arange(N))
     plt.xlabel('time (ms)')
-    ylim(0,N)
-    yticks(ticks[:N],areasName[:N])
-    xlim(0,duration/ms)
+    plt.ylim(0,N)
+    plt.yticks(ticks[:N],areasName[:N])
+    plt.xlim(0,duration/ms)
 
     # Save figure
     if saveFigure== 'yes':
@@ -75,7 +75,7 @@ N=int(sys.argv[1])
 figure=str(sys.argv[2])
 saveData=str(sys.argv[3])
 saveFigure=str(sys.argv[4])
-useSaveData=str(sys.argv[4])
+useSaveData=str(sys.argv[5])
 
 # Path
 path = os.path.abspath(os.getcwd())

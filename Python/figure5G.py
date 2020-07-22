@@ -38,3 +38,5 @@ plt.ylim([0, 5])
 plt.xlim([10**-6, 3])
 plt.ylabel('FLN: ventral stream')
 plt.xscale('log')
+
+plt.show()
