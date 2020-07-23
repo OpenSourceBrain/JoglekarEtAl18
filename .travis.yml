@@ -1,7 +1,6 @@
 # Framework for running automated tests on OSB using Travis-CI, see https://github.com/OpenSourceBrain/osb-model-validation
 
 dist: xenial
-sudo: false  
 
 addons:
   apt:
@@ -22,8 +21,6 @@ addons:
 language: python
 python: 3.6
 
-virtualenv:
-    system_site_packages: true
 
 env:
     - OMV_ENGINE=Brian1
