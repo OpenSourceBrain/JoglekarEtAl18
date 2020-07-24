@@ -235,15 +235,14 @@ def network(para,simulator):
     for i in range(NE):
         noise = sim.NoisyCurrentSource(mean=0, stdev=stdNoiseE, start=0.0, stop=para["duration"])
         popE[i].inject(noise)
-        popE[i].inject(noise)
+        
     
     # Noise on inhibitory neurons    
     stdNoiseI = (para["sigma"]/para["R"])*(para["taumI"]**0.5)/(para["dt"]**0.5)
     for i in range(NI):
         noise = sim.NoisyCurrentSource(mean=0, stdev=stdNoiseI, start=0.0, stop=para["duration"])
         popI[i].inject(noise)
-        popI[i].inject(noise)
-    
+        
     # paramters for initial conditions
     kernelseed  = 5456532
     rng = NumpyRNG(kernelseed, parallel_safe=True)
