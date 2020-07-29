@@ -1,8 +1,7 @@
 import numpy as np
 from brian2 import *
-from generateNetwork import *
-
 import matplotlib.pyplot as plt
+
 # Raster Plot
 def rasterPlot(xValues,yValues,duration,figure,N,saveFigure,path):
     
