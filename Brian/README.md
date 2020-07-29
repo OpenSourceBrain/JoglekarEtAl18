@@ -18,26 +18,26 @@ Files and figures will be saved in folder files and figures, respectively.
 #### Examples,
 
 
-python figures.py 29 5B yes yes
+python figures.py 29 5B yes yes no
 
 ![title](figures/figure5B_29areas.png)
 
-python figures.py 29 5C yes yes
+python figures.py 29 5C yes yes no
 
 ![title](figures/figure5C_29areas.png)
 
-python figures.py 29 5E yes yes
+python figures.py 29 5E yes yes no
 
 ![title](figures/figure5E_29areas.png)
 
-python figures.py 29 6A yes yes
+python figures.py 29 6A yes yes no
 
 ![title](figures/figure6A_29areas.png)
 
-python figures.py 29 6B yes yes
+python figures.py 29 6B yes yes no
 
 ![title](figures/figure6B_29areas.png)
 
-python figures.py 29 6D yes yes
+python figures.py 29 6D yes yes no
 
 ![title](figures/figure6D_29areas.png)
