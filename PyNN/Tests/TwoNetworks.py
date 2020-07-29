@@ -204,15 +204,14 @@ stdNoiseE = (sigmaV/R)*(tauE_m**0.5)/(dt**0.5)
 for i in range(nAreas*NE):
     noise = NoisyCurrentSource(mean=0, stdev=stdNoiseE, start=0.0, stop=duration)
     popE[i].inject(noise)
-    popE[i].inject(noise)
+    
 
 # Noise on inhibitory neurons    
 stdNoiseI = (sigmaV/R)*(tauI_m**0.5)/(dt**0.5)
 for i in range(nAreas*NI):
     noise = NoisyCurrentSource(mean=0, stdev=stdNoiseI, start=0.0, stop=duration)
     popI[i].inject(noise)
-    popI[i].inject(noise)
-
+    
 # paramters for initial conditions
 kernelseed  = 5456532
 rng = NumpyRNG(kernelseed, parallel_safe=True)
