@@ -38,46 +38,6 @@ def spikeData(pop):
     # Index and time
     return np.column_stack((timeSpike,indexSpike))            
 
-
-def computeFiringRate(spikeMonitor,group,time_end,dt):       
-
-    # array to store firing rate and time
-    firing_rate=np.zeros((2,round((time_end+dt)/dt)))
-    
-    # vetor com tempos
-    firing_rate[0,:]=np.arange(0,int((time_end+dt)/dt),int(dt/dt))
-           
-    tempList=[]
-    
-    for idx in range(0,len(group)):
-        
-        tempList.extend(np.where(spikeMonitor[:,1]==group[idx])[0].tolist()[:])
-    
-    tempArray=np.copy(np.asarray(tempList))
-
-    tempArray=np.copy(spikeMonitor[tempArray])
-    times=np.sort(tempArray[:,0])  
-
-    # tempos dos disparos e quantidade de neuronios por tempo
-    frTemp=np.unique(times,return_counts=True)
-
-    # indices dos tempos dos disparos
-    frTemp2=(np.round(frTemp[0]/dt)).astype(int)
-
-    # Firing Rate
-    firing_rate[1,frTemp2]=frTemp[1]* (1.0/(dt/(10**3)))/len(group)
-
-    return firing_rate
-
-def sliding_window(serie,width,dt):
-    # width in ms   
-    width_dt = int(width / 2 / dt)*2 + 1
-    used_width = width_dt * dt
-    window = np.ones(width_dt)
-    
-    return np.convolve(serie, window * 1. / sum(window), mode='same')
-
-
 def gen_params(n_areas,regime, gba, duration):    
     
     
@@ -354,72 +314,4 @@ def run_network(n_areas,regime,gba,duration,simulator):
     
     return E_spike
 
-def firingRate(N,goodprop,badprop,duration):
 
-    binsize = 10
-    stepsize =  1  
-    
-    # Store maximum firing rate for each area
-    maxratebad  = np.empty([N,1])
-    maxrategood = np.empty([N,1])
-    
-    # sort net spikes
-    netspikebad = len(badprop)
-    netspikegood= len(goodprop)
-    
-    badpropsorted = badprop[badprop[:,1].argsort(),]
-    goodpropsorted = goodprop[goodprop[:,1].argsort(),]
-            
-    netbinno = int( 1+(duration)-(binsize))
-    popratebad = np.empty([N,netbinno ])
-    poprategood = np.empty([N,netbinno ])
-            
-     
-    countbad = 0
-    countgood = 0#for each spike. 
-            
-    monareaktimeallbad = []
-    monareaktimeallgood = []
-                    
-    for u in range(N):
-        monareaktimebad = []
-        monareaktimegood = []
-        
-        while((countbad < netspikebad) and (badpropsorted[countbad,1]<1600*(u+1)) ):
-          monareaktimebad.append(badpropsorted[countbad,0])#append spike times for each area.
-          countbad = countbad + 1
-          
-        while((countgood < netspikegood) and (goodpropsorted[countgood,1]<1600*(u+1)) ):
-          monareaktimegood.append(goodpropsorted[countgood,0])#append spike times for each area.
-          countgood = countgood + 1
-          
-        valsbad = np.histogram(monareaktimebad, bins=int(duration/stepsize))
-        valsgood = np.histogram(monareaktimegood, bins=int(duration/stepsize))
-        
-        valszerobad = valsbad[0]
-        valszerogood = valsgood[0]
-    
-        astep = binsize/1
-        
-        valsnewbad = np.zeros(netbinno)
-        valsnewgood = np.zeros(netbinno)
-        
-        acount = 0
-        while acount < netbinno:        
-            valsnewbad[acount] = sum(valszerobad[int(acount):int(acount+astep)])
-            valsnewgood[acount] = sum(valszerogood[int(acount):int(acount+astep)])
-            acount=acount+1
-    
-        valsratebad = valsnewbad*((1000/binsize) /(1600) ) # divide by no of neurons per E pop. 
-        valsrategood = valsnewgood*((1000/binsize) /(1600) )    
-        popratebad[u,:], poprategood[u,:] = valsratebad, valsrategood    
-        
-        #compute population firing rates. 
-        
-        maxratebad[u,0] = max(valsratebad[int(len(valsratebad)/3):])
-        maxrategood[u,0] = max(valsrategood[int(len(valsrategood)/3):])
-        
-            
-    return maxratebad, maxrategood
-
-    
