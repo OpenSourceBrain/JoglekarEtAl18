@@ -18,6 +18,7 @@ python figuresPyNN.py arg1 arg2 arg3 arg4 arg5 arg6
 
 Files and figures will be saved in folders files and figures, respectively.
 
+Examples:
 
 python figuresPyNN.py 29 6A -neuron yes yes no
 
@@ -27,6 +28,6 @@ python figuresPyNN.py 29 6B -neuron yes yes no
 
 ![title](figures/figure6B_29areas.png)
 
-python figuresPyNN.py 29 6D yes yes yes
+python figuresPyNN.py 29 6D -neuron yes yes yes
 
 ![title](figures/figure6D_29areas.png)
