@@ -62,3 +62,4 @@ https://www.cell.com/neuron/fulltext/S0896-6273(18)30152-1
 - [Original Brian code - analyze data](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/OriginalCodes/cons_analyzedata.py)
 - [Original Brian code - visualizataion](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/OriginalCodes/rishimodel_generatefigs_spiking.py)
 
+[![Build Status](https://travis-ci.org/OpenSourceBrain/JoglekarEtAl18.svg?branch=master)](https://travis-ci.org/OpenSourceBrain/JoglekarEtAl18)

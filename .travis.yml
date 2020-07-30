@@ -6,9 +6,6 @@ addons:
   apt:
     packages:
        # Requirements for Brian & NEST
-    - python-numpy 
-    - python-scipy 
-    - python-matplotlib 
     - python-sympy
     - python-tables 
     - python-tornado
@@ -19,7 +16,7 @@ addons:
     
     
 language: python
-python: 3.6
+python: 3.7
 
 
 env:
@@ -31,7 +28,6 @@ install:
     - pip install matplotlib # Why is this needed? Doesn't seem to get installed correctly with addons above...
     
  
-
 script:
     - omv all -V
     - omv list-engines -V
