@@ -20,6 +20,18 @@ Files and figures will be saved in folders files and figures, respectively.
 
 Examples:
 
+python figuresPyNN.py 29 5B -neuron yes yes no
+
+![title](figures/figure5B_29areas.png)
+
+python figuresPyNN.py 29 5C -neuron yes yes no
+
+![title](figures/figure5C_29areas.png)
+
+python figuresPyNN.py 29 5E -neuron yes yes yes
+
+![title](figures/figure5E_29areas.png)
+
 python figuresPyNN.py 29 6A -neuron yes yes no
 
 ![title](figures/figure6A_29areas.png)
