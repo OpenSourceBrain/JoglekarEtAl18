@@ -18,13 +18,13 @@ def rasterPlot(xValues,yValues,duration,figure,N,saveFigure,path):
 
     plt.figure()
     plt.plot(xValues, 1.0*yValues/(4*400), '.',markersize=1)
-    plt.plot([0, duration/ms], np.arange(N+1).repeat(2).reshape(-1, 2).T, 'k-')
+    plt.plot([0, duration], np.arange(N+1).repeat(2).reshape(-1, 2).T, 'k-')
     plt.ylabel('Area')
     plt.yticks(np.arange(N))
     plt.xlabel('time (ms)')
     plt.ylim(0,N)
     plt.yticks(ticks[:N],areasName[:N])
-    plt.xlim(0,duration/ms)
+    plt.xlim(0,duration)
 
     # Save figure
     if saveFigure== 'yes':
@@ -34,7 +34,7 @@ def rasterPlot(xValues,yValues,duration,figure,N,saveFigure,path):
 
     return 0
 
-# Plot for Mnaximum firing rate
+# Plot for Maximum firing rate
 def firingRatePlot(maxrategood,maxratebad,figure,N,saveFigure,path):
     
     areasName=['V1','V2','V4','DP','MT',
@@ -62,8 +62,8 @@ def firingRatePlot(maxrategood,maxratebad,figure,N,saveFigure,path):
 
 def firingRate(N,goodprop,duration):
 
-    binsize = 10*ms
-    stepsize =  1*ms  
+    binsize = 10 #[ms]
+    stepsize =  1 #[ms] 
     
     # Store maximum firing rate for each area
     maxrategood = np.empty([N,1])
@@ -73,7 +73,7 @@ def firingRate(N,goodprop,duration):
     
     goodpropsorted = goodprop[goodprop[:,1].argsort(),]
             
-    netbinno = int( 1+(duration/ms)-(binsize/ms))
+    netbinno = int( 1+(duration)-(binsize))
     poprategood = np.empty([N,netbinno ])
             
      
@@ -92,7 +92,7 @@ def firingRate(N,goodprop,duration):
         
         valszerogood = valsgood[0]
     
-        astep = binsize/(1*ms)
+        astep = binsize
         
         valsnewgood = np.zeros(netbinno)
         
@@ -101,7 +101,7 @@ def firingRate(N,goodprop,duration):
             valsnewgood[acount] = sum(valszerogood[int(acount):int(acount+astep)])
             acount=acount+1
     
-        valsrategood = valsnewgood*((1000*ms/binsize) /(1600) )    
+        valsrategood = valsnewgood*((1000/binsize) /(1600) )    
         poprategood[u,:] = valsrategood    
         
         #compute population firing rates. 
