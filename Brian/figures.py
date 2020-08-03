@@ -30,10 +30,10 @@ path = os.path.abspath(os.getcwd())
 if figure== '5B':
     
     file= path+'/files/spikes_figure'+figure+'_'+str(N)+'areas.txt'
-    duration=800*ms
+    duration=800
     
     if useSaveData!='yes':
-        monitors = run_network(N,'asynchronous','weak',duration/ms)
+        monitors = run_network(N,'asynchronous','weak',duration)
         xValues=monitors.t/ms
         yValues=monitors.i
         # Save data
@@ -50,10 +50,10 @@ if figure== '5B':
 elif figure== '5C':
     
     file= path+'/files/spikes_figure'+figure+'_'+str(N)+'areas.txt'
-    duration=800*ms
+    duration=800
     
     if useSaveData!='yes':
-        monitors = run_network(N,'asynchronous','strong',duration/ms)
+        monitors = run_network(N,'asynchronous','strong',duration)
         xValues=monitors.t/ms
         yValues=monitors.i
         # Save data
@@ -72,10 +72,10 @@ elif figure== '5E':
     file1= path+'/files/spikes_figure5B_'+str(N)+'areas.txt'
     file2= path+'/files/spikes_figure5C_'+str(N)+'areas.txt'
     
-    duration=800*ms
+    duration=800
     
     if useSaveData!='yes':
-        monitorsBad = run_network(N,'asynchronous','weak',duration/ms)
+        monitorsBad = run_network(N,'asynchronous','weak',duration)
         bad=np.column_stack([monitorsBad.t/ms,monitorsBad.i])
         if saveData== 'yes':
             np.savetxt(file1,bad) 
@@ -83,7 +83,7 @@ elif figure== '5E':
         bad=np.loadtxt(file1)
         
     if useSaveData!='yes':
-        monitorsGood = run_network(N,'asynchronous','strong',duration/ms)
+        monitorsGood = run_network(N,'asynchronous','strong',duration)
         good=np.column_stack([monitorsGood.t/ms,monitorsGood.i])
         if saveData== 'yes':
             np.savetxt(file2,good) 
@@ -98,10 +98,10 @@ elif figure== '5E':
 elif figure== '6A':
     
     file= path+'/files/spikes_figure'+figure+'_'+str(N)+'areas.txt'
-    duration=440*ms
+    duration=440
     
     if useSaveData!='yes':
-        monitors = run_network(N,'synchronous','weak',duration/ms)
+        monitors = run_network(N,'synchronous','weak',duration)
         xValues=monitors.t/ms
         yValues=monitors.i
         # Save data
@@ -119,10 +119,10 @@ elif figure== '6A':
 elif figure== '6B':    
     
     file= path+'/files/spikes_figure'+figure+'_'+str(N)+'areas.txt'
-    duration=440*ms
+    duration=440
     
     if useSaveData!='yes':
-        monitors = run_network(N,'synchronous','strong',duration/ms)
+        monitors = run_network(N,'synchronous','strong',duration)
         xValues=monitors.t/ms
         yValues=monitors.i
         # Save data
@@ -141,10 +141,10 @@ elif figure== '6D':
     file1= path+'/files/spikes_figure6A_'+str(N)+'areas.txt'
     file2= path+'/files/spikes_figure6B_'+str(N)+'areas.txt'
     
-    duration=440*ms
+    duration=440
     
     if useSaveData!='yes':
-        monitorsBad = run_network(N,'synchronous','weak',duration/ms)
+        monitorsBad = run_network(N,'synchronous','weak',duration)
         bad=np.column_stack([monitorsBad.t/ms,monitorsBad.i])
         if saveData== 'yes':
             np.savetxt(file1,bad) 
@@ -152,7 +152,7 @@ elif figure== '6D':
         bad=np.loadtxt(file1)
         
     if useSaveData!='yes':
-        monitorsGood = run_network(N,'synchronous','strong',duration/ms)
+        monitorsGood = run_network(N,'synchronous','strong',duration)
         good=np.column_stack([monitorsGood.t/ms,monitorsGood.i])
         if saveData== 'yes':
             np.savetxt(file2,good) 
