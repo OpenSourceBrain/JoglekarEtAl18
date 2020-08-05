@@ -2,7 +2,7 @@ from neuromllite.NetworkGenerator import check_to_generate_or_run
 from neuromllite import Simulation
 
 from neuromllite import Network, Population, Projection, Cell, Synapse, InputSource, Input
-from neuromllite import RandomConnectivity
+from neuromllite import RandomConnectivity,RectangularRegion, RelativeLayout
 
 import sys
 import numpy as np
@@ -26,10 +26,18 @@ def internal_connections(pops):
                                                     weight=weight,
                                                     random_connectivity=RandomConnectivity(probability=1)))
                 
+
+
                 
 # Build the network
 net = Network(id='Joglekar_figure1b')
 net.notes = 'A simple rate model with E and I populations'
+
+
+r1 = RectangularRegion(id='Joglekar', x=0,y=0,z=0,width=1000,height=100,depth=1000)
+net.regions.append(r1)
+
+
 
 wEEweak=4.45                                # synpatic weight E to E weak LBA    
 wEIweak=4.7                                 # synpatic weight I to E weak LBA
@@ -55,12 +63,14 @@ net.cells.append(inh_cell)
 exc_pop = Population(id='Excitatory', 
                      size=1, 
                      component=exc_cell.id, 
-                     properties={'color': '0.8 0 0','radius':10})
+                     properties={'color': '0.8 0 0','radius':10},
+                     relative_layout = RelativeLayout(region=r1.id,x=-20,y=0,z=0))
 
 inh_pop = Population(id='Inhibitory', 
                      size=1, 
                      component=inh_cell.id, 
-                     properties={'color': '0 0 0.8','radius':10})
+                     properties={'color': '0 0 0.8','radius':10},
+                     relative_layout = RelativeLayout(region=r1.id,x=20,y=0,z=0))
 
 net.populations.append(exc_pop)
 net.populations.append(inh_pop)
