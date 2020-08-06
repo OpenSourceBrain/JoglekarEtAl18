@@ -1,0 +1,12 @@
+{
+    "SimJoglekar1Network": {
+        "version": "NeuroMLlite v0.2.1",
+        "network": "Joglekar1Network_PyNN.json",
+        "duration": 1000.0,
+        "dt": 0.01,
+        "recordSpikes": {
+            "popE": "*",
+            "popI": "*"
+        }
+    }
+}

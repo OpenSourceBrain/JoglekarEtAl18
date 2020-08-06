@@ -1,0 +1,136 @@
+{
+    "Joglekar_figure1b": {
+        "version": "NeuroMLlite v0.2.1",
+        "parameters": {
+            "wee": 250.0,
+            "wei": 214.28571428571428,
+            "wie": -335.0,
+            "wii": -285.7142857142857
+        },
+        "notes": "A simple rate model with E and I populations",
+        "cells": [
+            {
+                "Exc": {
+                    "lems_source_file": "figure1b_Parameters.xml"
+                }
+            },
+            {
+                "Inh": {
+                    "lems_source_file": "figure1b_Parameters.xml"
+                }
+            }
+        ],
+        "synapses": [
+            {
+                "rsExc": {
+                    "lems_source_file": "figure1b_Parameters.xml"
+                }
+            },
+            {
+                "rsInh": {
+                    "lems_source_file": "figure1b_Parameters.xml"
+                }
+            }
+        ],
+        "regions": [
+            {
+                "Joglekar": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "width": 1000.0,
+                    "height": 100.0,
+                    "depth": 1000.0
+                }
+            }
+        ],
+        "populations": [
+            {
+                "Excitatory": {
+                    "size": 1,
+                    "component": "Exc",
+                    "properties": {
+                        "color": "0.8 0 0",
+                        "radius": 10
+                    },
+                    "relative_layout": {
+                        "region": "Joglekar",
+                        "x": -20.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            },
+            {
+                "Inhibitory": {
+                    "size": 1,
+                    "component": "Inh",
+                    "properties": {
+                        "color": "0 0 0.8",
+                        "radius": 10
+                    },
+                    "relative_layout": {
+                        "region": "Joglekar",
+                        "x": 20.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                }
+            }
+        ],
+        "projections": [
+            {
+                "proj_Excitatory_Excitatory": {
+                    "presynaptic": "Excitatory",
+                    "postsynaptic": "Excitatory",
+                    "synapse": "rsExc",
+                    "type": "continuousProjection",
+                    "delay": 0,
+                    "weight": "wee",
+                    "random_connectivity": {
+                        "probability": 1
+                    }
+                }
+            },
+            {
+                "proj_Excitatory_Inhibitory": {
+                    "presynaptic": "Excitatory",
+                    "postsynaptic": "Inhibitory",
+                    "synapse": "rsExc",
+                    "type": "continuousProjection",
+                    "delay": 0,
+                    "weight": "wei",
+                    "random_connectivity": {
+                        "probability": 1
+                    }
+                }
+            },
+            {
+                "proj_Inhibitory_Excitatory": {
+                    "presynaptic": "Inhibitory",
+                    "postsynaptic": "Excitatory",
+                    "synapse": "rsInh",
+                    "type": "continuousProjection",
+                    "delay": 0,
+                    "weight": "wie",
+                    "random_connectivity": {
+                        "probability": 1
+                    }
+                }
+            },
+            {
+                "proj_Inhibitory_Inhibitory": {
+                    "presynaptic": "Inhibitory",
+                    "postsynaptic": "Inhibitory",
+                    "synapse": "rsInh",
+                    "type": "continuousProjection",
+                    "delay": 0,
+                    "weight": "wii",
+                    "random_connectivity": {
+                        "probability": 1
+                    }
+                }
+            }
+        ]
+    }
+}

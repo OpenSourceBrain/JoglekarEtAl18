@@ -1,5 +1,4 @@
 import numpy as np
-from brian2 import *
 import matplotlib.pyplot as plt
 
 # Raster Plot
