@@ -1,6 +1,5 @@
 /NeuroML2/figure1/*.dat
 /NeuroML2/figure1/*.gv*
-/NeuroML2/figure1/report.*.txt
 /NeuroML2/SNN/*.gv*
 *_nrn.py
 /NeuroML2/SNN/*.dat
@@ -8,3 +7,7 @@
 /NeuroML2/SNN/*.mod
 report.*.txt
 x86_64
+__pycache__/
+*.pyc
+*.swp
+*.swo
