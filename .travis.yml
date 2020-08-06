@@ -1,15 +1,11 @@
 # Framework for running automated tests on OSB using Travis-CI, see https://github.com/OpenSourceBrain/osb-model-validation
 
 dist: xenial
-sudo: false  
 
 addons:
   apt:
     packages:
        # Requirements for Brian & NEST
-    - python-numpy 
-    - python-scipy 
-    - python-matplotlib 
     - python-sympy
     - python-tables 
     - python-tornado
@@ -20,20 +16,18 @@ addons:
     
     
 language: python
-python: 3.6
+python: 3.7
 
-virtualenv:
-    system_site_packages: true
 
 env:
-    - OMV_ENGINE=Brian1
+    - OMV_ENGINE=Brian2
 
 install: 
     - pip install git+https://github.com/OpenSourceBrain/osb-model-validation
-    #- pip install scipy # Why is this needed? Doesn't seem to get installed correctly on trusty with addons above...
+    - pip install scipy # Why is this needed? Doesn't seem to get installed correctly with addons above...
+    - pip install matplotlib # Why is this needed? Doesn't seem to get installed correctly with addons above...
     
  
-
 script:
     - omv all -V
     - omv list-engines -V

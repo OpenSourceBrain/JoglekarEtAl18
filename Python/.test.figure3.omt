@@ -1,0 +1,6 @@
+# Script for running automated tests on OSB using Travis-CI, see https://github.com/OpenSourceBrain/osb-model-validation
+ 
+# runs with Brian2; should be just Python, but Brian engine is quick to set up...
+
+target: figure3.py 
+engine: Brian2   
