@@ -316,8 +316,13 @@
 
         <Parameter name="R0" dimension="none"/>
         
+        <Constant name="MSEC" dimension="time" value="1ms"/>
+        
         <Exposure name="f" dimension="none"/>
         <Exposure name="iSyn" dimension="none"/>
+        
+        
+        <Attachments name="synapses" type="basePointCurrentDL"/>
 
         <Dynamics>
 
@@ -330,7 +335,7 @@
             <!-- Set V to zero for now... -->
             <DerivedVariable name="V" dimension="none" exposure="V" value="0"/>
 
-            <TimeDerivative variable="R" value="(f)"/>
+            <TimeDerivative variable="R" value="f/MSEC"/>
 
             <OnStart>
                 <StateAssignment variable="R" value="R0"/>
