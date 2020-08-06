@@ -69,6 +69,8 @@ muEE     = .0375
 net = Network(id='Joglekar1Network_PyNN')
 net.notes = 'Joglekar network: a network with PyNN cells & inputs'
 
+net.parameters = { 'scale': 0.01}
+
 ######################## Cell #################################################
 cellE = Cell(id='excitatory', pynn_cell='IF_curr_alpha')
 cellI = Cell(id='inhibitory', pynn_cell='IF_curr_alpha')
@@ -80,8 +82,6 @@ cellE.parameters = {
             "v_reset":Vreset, 
             "v_thresh":Vt, 
             "tau_refrac":tauRef,
-            "tau_syn_E":tau_syn_e,
-            "tau_syn_I":tau_syn_e,
             "i_offset":(VextE/R)}
 
 cellI.parameters = {
@@ -91,8 +91,6 @@ cellI.parameters = {
             "v_reset":Vreset, 
             "v_thresh":Vt, 
             "tau_refrac":tauRef,
-            "tau_syn_E":tau_syn_e,
-            "tau_syn_I":tau_syn_e,
             "i_offset":(VextI/R)}
 
 ### Append cells to network 
@@ -104,8 +102,8 @@ r1 = RectangularRegion(id='region1', x=0,y=0,z=0,width=1000,height=100,depth=100
 net.regions.append(r1)
 
 ############################# Populations #####################################
-pE = Population(id='popE', size=1600, component=cellE.id, properties={'color':'1 0 0'},random_layout = RandomLayout(region=r1.id))
-pI = Population(id='popI', size=400, component=cellI.id, properties={'color':'1 0 0'},random_layout = RandomLayout(region=r1.id))
+pE = Population(id='popE', size='int(1600*scale)', component=cellE.id, properties={'color':'.9 0 0'},random_layout = RandomLayout(region=r1.id))
+pI = Population(id='popI', size='int(400*scale)', component=cellI.id, properties={'color':'0 0 .9'},random_layout = RandomLayout(region=r1.id))
 
 
 ### Append populations to network 
@@ -151,6 +149,7 @@ sim = Simulation(id='SimJoglekar1Network',
                  network=new_file,
                  duration='1000',
                  dt='0.01',
+                 recordTraces={pE.id:[0,1], pI.id:[0,1]},
                  recordSpikes={pE.id:'*', pI.id:'*'})
                  
 sim.to_json_file()
