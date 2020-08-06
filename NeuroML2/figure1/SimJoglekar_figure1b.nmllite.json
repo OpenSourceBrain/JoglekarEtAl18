@@ -2,10 +2,12 @@
     "SimJoglekar_figure1b": {
         "version": "NeuroMLlite v0.2.1",
         "network": "Joglekar_figure1b.json",
-        "duration": 0.6,
-        "dt": 0.0001,
-        "recordRates": {
-            "all": "*"
+        "duration": 600.0,
+        "dt": 0.01,
+        "recordVariables": {
+            "r": {
+                "all": "*"
+            }
         }
     }
 }

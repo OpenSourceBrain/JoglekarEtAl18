@@ -144,29 +144,31 @@
       <DerivedVariable exposure="i" name="i" value="weight * SEC * PAMP_SCALE * rpeer"/>
     </Dynamics>
   </ComponentType>
-  <ComponentType description="Work in progress..." extends="baseRateUnitDL" name="rateJoglekarCellDL">
-    <Parameter dimension="none" name="R0"/>
+  <ComponentType description="Work in progress..." extends="baseRateUnit" name="rateJoglekarCell">
+    <Parameter dimension="per_time" name="r0"/>
+    <Constant dimension="time" name="SEC" value="1s"/>
+    <Constant dimension="per_time" name="HZ_SCALE" value="1 Hz"/>
+    <Constant dimension="current" name="NAMP_SCALE" value="1 nA"/>
+    <Attachments name="synapses" type="basePointCurrent"/>
     <Exposure dimension="none" name="f"/>
-    <Exposure dimension="none" name="iSyn"/>
+    <Exposure dimension="current" name="iSyn"/>
     <Dynamics>
-      <StateVariable dimension="none" exposure="R" name="R"/>
-      <DerivedVariable dimension="none" exposure="iSyn" name="iSyn" reduce="add" select="synapses[*]/I"/>
-      <DerivedVariable dimension="none" exposure="f" name="f" value="iSyn"/>
-      <DerivedVariable dimension="none" exposure="V" name="V" value="0"/>
-      <TimeDerivative value="(f)" variable="R"/>
+      <StateVariable dimension="per_time" exposure="r" name="r"/>
+      <DerivedVariable dimension="current" exposure="iSyn" name="iSyn" reduce="add" select="synapses[*]/i"/>
+      <DerivedVariable dimension="none" exposure="f" name="f" value="iSyn/NAMP_SCALE"/>
+      <DerivedVariable dimension="none" exposure="v" name="v" value="0"/>
+      <TimeDerivative value="HZ_SCALE*f/SEC" variable="r"/>
       <OnStart>
-        <StateAssignment value="R0" variable="R"/>
+        <StateAssignment value="r0" variable="r"/>
       </OnStart>
-      <OnCondition test="R .lt. 0">
+      <OnCondition test="r .lt. 0">
+        <StateAssignment value="0" variable="r"/>
         <EventOut port="spike"/>
-      </OnCondition>
-      <OnCondition test="R .leq. 0">
-        <StateAssignment value="0" variable="R"/>
       </OnCondition>
     </Dynamics>
   </ComponentType>
-  <Component R0="1.0" id="Exc" type="rateJoglekarCellDL"/>
-  <Component R0="0.0" id="Inh" type="rateJoglekarCellDL"/>
+  <Component id="Exc" r0="1Hz" type="rateJoglekarCell"/>
+  <Component id="Inh" r0="0Hz" type="rateJoglekarCell"/>
   <Component id="rsExc" type="rateSynapse"/>
   <Component id="rsInh" type="rateSynapse"/>
 </Lems>

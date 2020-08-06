@@ -2,10 +2,10 @@
     
     <Include file="RateBased.xml"/>
     
-    <rateJoglekarCellDL id="Exc"  R0="0.0"  />
-    <rateJoglekarCellDL id="Inh"  R0="0.5" />
-    <rateSynapseDL id="rsExc" />
-    <rateSynapseDL id="rsInh" />
-    <silentRateSynapse id="silent1DL"/>
+    <rateJoglekarCell id="Exc"  r0="1Hz"  />
+    <rateJoglekarCell id="Inh"  r0="0Hz" />
+    <rateSynapse id="rsExc" />
+    <rateSynapse id="rsInh" />
+    <silentRateSynapse id="silent1"/>
 
 </Lems>
