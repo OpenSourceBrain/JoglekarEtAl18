@@ -1,0 +1,7 @@
+<Lems>
+
+    <Include file="NoisyCurrentSource.xml"/>
+
+    <noisyCurrentSource id="noisyCurrentSource0" delay="100ms" duration="800ms" mean="0.25 nA" stdev="0.1 nA" noiseDt="1.0ms"/>
+    
+</Lems>
