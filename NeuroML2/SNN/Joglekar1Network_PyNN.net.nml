@@ -9,7 +9,7 @@
     <IF_curr_alpha id="inhibitory" cm="0.2" i_offset="0.294" tau_syn_E="0.5" tau_syn_I="0.5" v_init="-70." tau_m="10." tau_refrac="2." v_reset="-60." v_rest="-70." v_thresh="-50."/>
     <network id="Joglekar1Network_PyNN">
         <notes>Joglekar network: a network with PyNN cells &amp; inputs</notes>
-        <property tag="recommended_dt_ms" value="0.01"/>
+        <property tag="recommended_dt_ms" value="0.1"/>
         <property tag="recommended_duration_ms" value="1000.0"/>
         <population id="popE" component="excitatory" size="16" type="populationList">
             <property tag="color" value=".9 0 0"/>

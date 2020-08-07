@@ -32,7 +32,7 @@ coeffI=2*coeffE
 dt=0.1
     
 # duration
-duration=500
+duration=1000
 
 # number of areas
 nAreas=2
@@ -116,12 +116,20 @@ stdNoiseE = (sigmaV/R)*(tauE_m**0.5)/(dt**0.5)
 
 input_sourceE = InputSource(id='noisyCurrentSourceE', 
                            lems_source_file='TestNCS.xml', 
-                           parameters={'mean':'0.0nA','stdev':str(stdNoiseE)+'nA'})
+                           parameters={'mean':'0.0nA',
+                                       'stdev':str(stdNoiseE)+'nA',
+                                       'noiseDt':'%sms'%dt,
+                                       'delay':'0ms',
+                                       'duration':'%sms'%duration})
 # Noise on inhibitory neurons    
 stdNoiseI = (sigmaV/R)*(tauI_m**0.5)/(dt**0.5)
 input_sourceI = InputSource(id='noisyCurrentSourceI', 
                            lems_source_file='TestNCS.xml', 
-                           parameters={'mean':'0.0nA','stdev':str(stdNoiseI)+'nA'})
+                           parameters={'mean':'0.0nA',
+                                       'stdev':str(stdNoiseI)+'nA',
+                                       'noiseDt':'%sms'%dt,
+                                       'delay':'0ms',
+                                       'duration':'%sms'%duration})
 
 
 net.input_sources.append(input_sourceE)
@@ -147,8 +155,9 @@ new_file = net.to_json_file('%s.json'%net.id)
 
 sim = Simulation(id='SimJoglekar1Network',
                  network=new_file,
-                 duration='1000',
-                 dt='0.01',
+                 duration=duration,
+                 dt=dt,
+                 seed=1234,
                  recordTraces={pE.id:[0,1], pI.id:[0,1]},
                  recordSpikes={pE.id:'*', pI.id:'*'})
                  

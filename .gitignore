@@ -11,3 +11,6 @@ __pycache__/
 *.pyc
 *.swp
 *.swo
+/NeuroML2/SNN/*.pkl
+/NeuroML2/SNN/tmp*.nml
+/NeuroML2/SNN/LEMS_*.png

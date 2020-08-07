@@ -30,6 +30,6 @@
       </OnCondition>
     </Dynamics>
   </ComponentType>
-  <Component delay="0ms" duration="24hour" id="noisyCurrentSourceE" mean="0.0nA" noiseDt="1.0ms" stdev="0.848528137423857nA" type="noisyCurrentSource"/>
-  <Component delay="0ms" duration="24hour" id="noisyCurrentSourceI" mean="0.0nA" noiseDt="1.0ms" stdev="0.6000000000000001nA" type="noisyCurrentSource"/>
+  <Component delay="0ms" duration="1000ms" id="noisyCurrentSourceE" mean="0.0nA" noiseDt="0.1ms" stdev="0.848528137423857nA" type="noisyCurrentSource"/>
+  <Component delay="0ms" duration="1000ms" id="noisyCurrentSourceI" mean="0.0nA" noiseDt="0.1ms" stdev="0.6000000000000001nA" type="noisyCurrentSource"/>
 </Lems>

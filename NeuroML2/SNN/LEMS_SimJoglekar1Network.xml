@@ -18,7 +18,7 @@
     <Include file="Joglekar1Network_PyNN.net.nml"/>
     <Include file="Joglekar1Network_PyNN__lems.xml"/>
    
-    <Simulation id="SimJoglekar1Network" length="1000.0ms" step="0.01ms" target="Joglekar1Network_PyNN" seed="5678">  <!-- Note seed: ensures same random numbers used every run -->
+    <Simulation id="SimJoglekar1Network" length="1000.0ms" step="0.1ms" target="Joglekar1Network_PyNN" seed="1234">  <!-- Note seed: ensures same random numbers used every run -->
         
         <Display id="popE_v" title="Plots of popE_v" timeScale="1ms" xmin="-100.0" xmax="1100.0" ymin="-80" ymax="40">
             <Line id="popE_0_excitatory_v" quantity="popE/0/excitatory/v" scale="1mV" color="#d54f33" timeScale="1ms"/>
