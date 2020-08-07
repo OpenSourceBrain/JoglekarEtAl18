@@ -3,7 +3,18 @@
         "version": "NeuroMLlite v0.2.1",
         "network": "Joglekar1Network_PyNN.json",
         "duration": 1000.0,
-        "dt": 0.01,
+        "dt": 0.1,
+        "seed": 1234,
+        "recordTraces": {
+            "popE": [
+                0,
+                1
+            ],
+            "popI": [
+                0,
+                1
+            ]
+        },
         "recordSpikes": {
             "popE": "*",
             "popI": "*"

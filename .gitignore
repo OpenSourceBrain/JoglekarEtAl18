@@ -1,0 +1,16 @@
+/NeuroML2/figure1/*.dat
+/NeuroML2/figure1/*.gv*
+/NeuroML2/SNN/*.gv*
+*_nrn.py
+/NeuroML2/SNN/*.dat
+/NeuroML2/SNN/*.spikes
+/NeuroML2/SNN/*.mod
+report.*.txt
+x86_64
+__pycache__/
+*.pyc
+*.swp
+*.swo
+/NeuroML2/SNN/*.pkl
+/NeuroML2/SNN/tmp*.nml
+/NeuroML2/SNN/LEMS_*.png

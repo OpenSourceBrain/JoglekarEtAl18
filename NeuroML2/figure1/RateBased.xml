@@ -310,45 +310,44 @@
 
 
 	<!-- Model for Joglekar figure 1... -->
-	<ComponentType  name="rateJoglekarCellDL"
-                    extends="baseRateUnitDL"
+	<ComponentType  name="rateJoglekarCell"
+                    extends="baseRateUnit"
                     description="Work in progress...">
 
-        <Parameter name="R0" dimension="none"/>
+        <Parameter name="r0" dimension="per_time"/>
         
-        <Constant name="MSEC" dimension="time" value="1ms"/>
+        <Constant name="SEC" dimension="time" value="1s"/>
+        <Constant name="HZ_SCALE" dimension="per_time" value="1 Hz"/>
+        <Constant name="NAMP_SCALE" dimension="current" value="1 nA"/>
         
         <Exposure name="f" dimension="none"/>
-        <Exposure name="iSyn" dimension="none"/>
+        <Exposure name="iSyn" dimension="current"/>
         
         
-        <Attachments name="synapses" type="basePointCurrentDL"/>
+        <Attachments name="synapses" type="basePointCurrent"/>
 
         <Dynamics>
 
-            <StateVariable name="R" dimension="none" exposure="R" description="Rate..."/>
+            <StateVariable name="r" dimension="per_time" exposure="r" description="Rate..."/>
 
-            <DerivedVariable name="iSyn" dimension="none" exposure="iSyn" select="synapses[*]/I" reduce="add" />
+            <DerivedVariable name="iSyn" dimension="current" exposure="iSyn" select="synapses[*]/i" reduce="add" />
 
-            <DerivedVariable name="f" dimension="none" exposure="f" value="iSyn"/>
+            <DerivedVariable name="f" dimension="none" exposure="f" value="iSyn/NAMP_SCALE"/>
 
             <!-- Set V to zero for now... -->
-            <DerivedVariable name="V" dimension="none" exposure="V" value="0"/>
+            <DerivedVariable name="v" dimension="none" exposure="v" value="0"/>
 
-            <TimeDerivative variable="R" value="f/MSEC"/>
+            <TimeDerivative variable="r" value="HZ_SCALE*f/SEC"/>
 
             <OnStart>
-                <StateAssignment variable="R" value="R0"/>
+                <StateAssignment variable="r" value="r0"/>
             </OnStart>
 
             <!-- On condition is not need on the model but NeuroML requires its definition -->
-            <OnCondition test="R .lt. 0">
+            <OnCondition test="r .lt. 0">
+                <StateAssignment variable="r" value="0"/>
                 <EventOut port="spike"/>
             </OnCondition>
-		
-	<OnCondition test="R .leq. 0">
-                <StateAssignment variable="R" value="0"/>
-        </OnCondition>
 		
         </Dynamics>
 

@@ -82,8 +82,8 @@ net.synapses.append(inh_syn)
 
 syns = {exc_pop.id:exc_syn.id, inh_pop.id:inh_syn.id}
 
-W = [[0, 0],
-     [0,0]]
+W = [['wee', 'wie'],
+     ['wei','wii']]
 
 # Add internal connections
 pops = [exc_pop, inh_pop]
@@ -95,10 +95,10 @@ net.id = 'Joglekar_figure1b'
 new_file = net.to_json_file('Joglekar_figure1b.json')
 
 sim = Simulation(id='SimJoglekar_figure1b',
-                                    duration='0.6',
-                                    dt='0.0001',
+                                    duration='600',
+                                    dt='0.01',
                                     network=new_file,
-                                    recordVariables={'R':{'all':'*'}}
+                                    recordVariables={'r':{'all':'*'}}
                                     )
                             
 sim.to_json_file('SimJoglekar_figure1b.nmllite.json')

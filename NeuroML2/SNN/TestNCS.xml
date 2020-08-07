@@ -2,6 +2,8 @@
 
     <Include file="NoisyCurrentSource.xml"/>
 
-    <noisyCurrentSource id="noisyCurrentSource0" delay="100ms" duration="800ms" mean="0.25 nA" stdev="0.1 nA" noiseDt="1.0ms"/>
+    <!-- Values for mean etc. will be set as parameters in NeuroMLlite file-->
+    <noisyCurrentSource id="noisyCurrentSourceE" delay="0ms" duration="24hour" mean="0 nA" stdev="0 nA" noiseDt="0.1ms"/>
+    <noisyCurrentSource id="noisyCurrentSourceI" delay="0ms" duration="24hour" mean="0 nA" stdev="0 nA" noiseDt="0.1ms"/>
     
 </Lems>

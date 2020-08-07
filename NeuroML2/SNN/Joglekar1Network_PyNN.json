@@ -1,6 +1,9 @@
 {
     "Joglekar1Network_PyNN": {
         "version": "NeuroMLlite v0.2.1",
+        "parameters": {
+            "scale": 0.01
+        },
         "notes": "Joglekar network: a network with PyNN cells & inputs",
         "cells": [
             {
@@ -13,8 +16,6 @@
                         "v_reset": -60.0,
                         "v_thresh": -50.0,
                         "tau_refrac": 2.0,
-                        "tau_syn_E": 0.1,
-                        "tau_syn_I": 0.1,
                         "i_offset": 0.284
                     }
                 }
@@ -29,8 +30,6 @@
                         "v_reset": -60.0,
                         "v_thresh": -50.0,
                         "tau_refrac": 2.0,
-                        "tau_syn_E": 0.1,
-                        "tau_syn_I": 0.1,
                         "i_offset": 0.294
                     }
                 }
@@ -42,7 +41,10 @@
                     "lems_source_file": "TestNCS.xml",
                     "parameters": {
                         "mean": "0.0nA",
-                        "stdev": "0.848528137423857nA"
+                        "stdev": "0.848528137423857nA",
+                        "noiseDt": "0.1ms",
+                        "delay": "0ms",
+                        "duration": "1000ms"
                     }
                 }
             },
@@ -51,7 +53,10 @@
                     "lems_source_file": "TestNCS.xml",
                     "parameters": {
                         "mean": "0.0nA",
-                        "stdev": "0.6000000000000001nA"
+                        "stdev": "0.6000000000000001nA",
+                        "noiseDt": "0.1ms",
+                        "delay": "0ms",
+                        "duration": "1000ms"
                     }
                 }
             }
@@ -71,10 +76,10 @@
         "populations": [
             {
                 "popE": {
-                    "size": 1600,
+                    "size": "int(1600*scale)",
                     "component": "excitatory",
                     "properties": {
-                        "color": "1 0 0"
+                        "color": ".9 0 0"
                     },
                     "random_layout": {
                         "region": "region1"
@@ -83,10 +88,10 @@
             },
             {
                 "popI": {
-                    "size": 400,
+                    "size": "int(400*scale)",
                     "component": "inhibitory",
                     "properties": {
-                        "color": "1 0 0"
+                        "color": "0 0 .9"
                     },
                     "random_layout": {
                         "region": "region1"
