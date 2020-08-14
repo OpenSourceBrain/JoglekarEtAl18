@@ -8,7 +8,7 @@ import sys
 import numpy as np
 
 # This function generates the overview of the network using neuromllite
-def internal_connections(pops):
+def internal_connections(pops,W,syns):
     for pre in pops:
         for post in pops:
 
@@ -48,11 +48,16 @@ wII=wIE*1.1                                 # synpatic weight I to I
 tE=0.02 
 
 Astrong=(1/tE)*np.array([[wEEstrong-1, -wEIstrong],[wIE, -wII-1]])
+Aweak=(1/tE)*np.array([[wEEweak-1, -wEIweak],[wIE, -wII-1]])
 
-net.parameters = { 'wee':      Astrong[0,0],
-                   'wei':      Astrong[1,0],
-                   'wie':      Astrong[0,1],
-                   'wii':      Astrong[1,1]}  
+net.parameters = { 'weeStrong':      Astrong[0,0],
+                   'weiStrong':      Astrong[1,0],
+                   'wieStrong':      Astrong[0,1],
+                   'wiiStrong':      Astrong[1,1],
+                   'weeWeak':      Aweak[0,0],
+                   'weiWeak':      Aweak[1,0],
+                   'wieWeak':      Aweak[0,1],
+                   'wiiWeak':      Aweak[1,1]}  
 
 
 exc_cell = Cell(id='Exc', lems_source_file='figure1b_Parameters.xml')
@@ -60,34 +65,59 @@ inh_cell = Cell(id='Inh', lems_source_file='figure1b_Parameters.xml')
 net.cells.append(exc_cell)
 net.cells.append(inh_cell)
 
-exc_pop = Population(id='Excitatory', 
+exc_popWeak = Population(id='ExcitatoryWeak', 
                      size=1, 
                      component=exc_cell.id, 
                      properties={'color': '0.8 0 0','radius':10},
                      relative_layout = RelativeLayout(region=r1.id,x=-20,y=0,z=0))
 
-inh_pop = Population(id='Inhibitory', 
+inh_popWeak = Population(id='InhibitoryWeak', 
                      size=1, 
                      component=inh_cell.id, 
                      properties={'color': '0 0 0.8','radius':10},
                      relative_layout = RelativeLayout(region=r1.id,x=20,y=0,z=0))
 
-net.populations.append(exc_pop)
-net.populations.append(inh_pop)
+exc_popStrong = Population(id='ExcitatoryStrong', 
+                     size=1, 
+                     component=exc_cell.id, 
+                     properties={'color': '0.8 0 0','radius':10},
+                     relative_layout = RelativeLayout(region=r1.id,x=-20,y=0,z=0))
+
+inh_popStrong = Population(id='InhibitoryStrong', 
+                     size=1, 
+                     component=inh_cell.id, 
+                     properties={'color': '0 0 0.8','radius':10},
+                     relative_layout = RelativeLayout(region=r1.id,x=20,y=0,z=0))
+
+net.populations.append(exc_popWeak)
+net.populations.append(inh_popWeak)
+net.populations.append(exc_popStrong)
+net.populations.append(inh_popStrong)
 
 exc_syn = Synapse(id='rsExc', lems_source_file='figure1b_Parameters.xml')
 inh_syn = Synapse(id='rsInh', lems_source_file='figure1b_Parameters.xml')
 net.synapses.append(exc_syn)
 net.synapses.append(inh_syn)
 
-syns = {exc_pop.id:exc_syn.id, inh_pop.id:inh_syn.id}
+#### Weak GBA
+syns = {exc_popWeak.id:exc_syn.id, inh_popWeak.id:inh_syn.id}
 
-W = [['wee', 'wie'],
-     ['wei','wii']]
+W = [['weeWeak', 'wieWeak'],
+     ['weiWeak','wiiWeak']]
 
 # Add internal connections
-pops = [exc_pop, inh_pop]
-internal_connections(pops)
+pops = [exc_popWeak, inh_popWeak]
+internal_connections(pops,W,syns)
+
+#### Strong GBA
+syns = {exc_popStrong.id:exc_syn.id, inh_popStrong.id:inh_syn.id}
+
+W = [['weeStrong', 'wieStrong'],
+     ['weiStrong','wiiStrong']]
+
+# Add internal connections
+pops = [exc_popStrong, inh_popStrong]
+internal_connections(pops,W,syns)
 
 
 # Save to JSON format

@@ -1,0 +1,57 @@
+<Lems>
+    
+    <!-- 
+
+        This LEMS file has been automatically generated using PyNeuroML v0.5.6 (libNeuroML v0.2.50)
+
+     -->
+    
+    <!-- Specify which component to run -->
+    <Target component="SimJoglekar_figure1b" reportFile="report.SimJoglekar_figure1b.txt"/>
+
+    <!-- Include core NeuroML2 ComponentType definitions -->
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+    
+    <Include file="PyNN.xml"/>
+    <Include file="Joglekar_figure1b.net.nml"/>
+    <Include file="Joglekar_figure1b__lems.xml"/>
+   
+    <Simulation id="SimJoglekar_figure1b" length="600.0ms" step="0.01ms" target="Joglekar_figure1b" seed="5678">  <!-- Note seed: ensures same random numbers used every run -->
+        
+        <Display id="ExcitatoryStrong_0_r" title="Plots of ExcitatoryStrong_0_r" timeScale="1ms" xmin="-60.0" xmax="660.0" ymin="-1" ymax="1">
+            <Line id="ExcitatoryStrong_0_Exc_r" quantity="ExcitatoryStrong/0/Exc/r" scale="1" color="#d54f33" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="ExcitatoryWeak_0_r" title="Plots of ExcitatoryWeak_0_r" timeScale="1ms" xmin="-60.0" xmax="660.0" ymin="-1" ymax="1">
+            <Line id="ExcitatoryWeak_0_Exc_r" quantity="ExcitatoryWeak/0/Exc/r" scale="1" color="#0534e4" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="InhibitoryStrong_0_r" title="Plots of InhibitoryStrong_0_r" timeScale="1ms" xmin="-60.0" xmax="660.0" ymin="-1" ymax="1">
+            <Line id="InhibitoryStrong_0_Inh_r" quantity="InhibitoryStrong/0/Inh/r" scale="1" color="#98e752" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="InhibitoryWeak_0_r" title="Plots of InhibitoryWeak_0_r" timeScale="1ms" xmin="-60.0" xmax="660.0" ymin="-1" ymax="1">
+            <Line id="InhibitoryWeak_0_Inh_r" quantity="InhibitoryWeak/0/Inh/r" scale="1" color="#bca074" timeScale="1ms"/>
+        </Display>
+        
+        <OutputFile id="ExcitatoryStrong_0_r_dat" fileName="ExcitatoryStrong_0.r.dat">
+            <OutputColumn id="ExcitatoryStrong_0_Exc_r" quantity="ExcitatoryStrong/0/Exc/r"/> 
+        </OutputFile>
+        
+        <OutputFile id="ExcitatoryWeak_0_r_dat" fileName="ExcitatoryWeak_0.r.dat">
+            <OutputColumn id="ExcitatoryWeak_0_Exc_r" quantity="ExcitatoryWeak/0/Exc/r"/> 
+        </OutputFile>
+        
+        <OutputFile id="InhibitoryStrong_0_r_dat" fileName="InhibitoryStrong_0.r.dat">
+            <OutputColumn id="InhibitoryStrong_0_Inh_r" quantity="InhibitoryStrong/0/Inh/r"/> 
+        </OutputFile>
+        
+        <OutputFile id="InhibitoryWeak_0_r_dat" fileName="InhibitoryWeak_0.r.dat">
+            <OutputColumn id="InhibitoryWeak_0_Inh_r" quantity="InhibitoryWeak/0/Inh/r"/> 
+        </OutputFile>
+        
+    </Simulation>
+
+</Lems>
