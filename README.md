@@ -21,6 +21,9 @@ https://www.cell.com/neuron/fulltext/S0896-6273(18)30152-1
 - [NeuroML codes](https://github.com/OpenSourceBrain/JoglekarEtAl18/tree/master/NeuroML2)
 	- Rate models
 
+### Simple examples
+- [Jupyter notebook](https://github.com/OpenSourceBrain/JoglekarEtAl18/tree/master/Notebooks)
+
 #### Figure 1
 - [Original matlab code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Matlab/rishimodel_generatefigs_rate.m)
 - [Python code](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Python/figure1.py)
