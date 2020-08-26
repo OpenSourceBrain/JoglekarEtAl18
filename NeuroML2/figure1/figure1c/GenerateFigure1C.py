@@ -9,6 +9,7 @@ import numpy as np
 import shutil
 import glob
 import scipy.linalg as la
+import os
 
 # This function generates the overview of the network using neuromllite
 def internal_connections(pops,W,syns):
@@ -74,8 +75,8 @@ for i in range(len(wEErange)):
                                'wii':      A[1,1]}  
             
             
-            exc_cell = Cell(id='Exc', lems_source_file='figure1b_Parameters.xml')
-            inh_cell = Cell(id='Inh', lems_source_file='figure1b_Parameters.xml')
+            exc_cell = Cell(id='Exc', lems_source_file='figure1c_Parameters.xml')
+            inh_cell = Cell(id='Inh', lems_source_file='figure1c_Parameters.xml')
             net.cells.append(exc_cell)
             net.cells.append(inh_cell)
             
@@ -96,8 +97,8 @@ for i in range(len(wEErange)):
             net.populations.append(exc_pop)
             net.populations.append(inh_pop)
             
-            exc_syn = Synapse(id='rsExc', lems_source_file='figure1b_Parameters.xml')
-            inh_syn = Synapse(id='rsInh', lems_source_file='figure1b_Parameters.xml')
+            exc_syn = Synapse(id='rsExc', lems_source_file='figure1c_Parameters.xml')
+            inh_syn = Synapse(id='rsInh', lems_source_file='figure1c_Parameters.xml')
             net.synapses.append(exc_syn)
             net.synapses.append(inh_syn)
             
@@ -116,7 +117,7 @@ for i in range(len(wEErange)):
             net.id = 'Joglekar_figure1b'
             new_file = net.to_json_file('Joglekar_figure1c.json')
             
-            sim = Simulation(id='SimJoglekar_figure1b',
+            sim = Simulation(id='SimJoglekar_figure1c',
                                                 duration='2',
                                                 dt='0.02',
                                                 network=new_file,
@@ -130,16 +131,12 @@ for i in range(len(wEErange)):
             # Open data file 
             data = np.loadtxt('Excitatory_'+str(round(wEE,5))+'_'+str(round(wEI,5))+'_0.r.dat')
             maxamplocal[j,i] = np.max(data[:,1])
+            os.remove('Excitatory_'+str(round(wEE,5))+'_'+str(round(wEI,5))+'_0.r.dat')
+            os.remove('Inhibitory_'+str(round(wEE,5))+'_'+str(round(wEI,5))+'_0.r.dat')
             
-            
-            for file in glob.glob('./*.{}'.format('dat')):
-                print (file)
-                shutil.move(file,'./Files/') 
-            
-            ### Abrir arquivo usando pandas e salvar o maximo em uma matriz se o autovalor for positivo
         else:
             # set value -5 to unstable region (it helps to plot the colormap) 
             maxamplocal[j,i]=-5
             
             
-np.save('./Files/maxamplocal.npy',maxamplocal)           
+np.save('maxamplocal.npy',maxamplocal)           

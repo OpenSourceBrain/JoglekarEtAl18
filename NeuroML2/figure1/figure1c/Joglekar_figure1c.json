@@ -11,24 +11,24 @@
         "cells": [
             {
                 "Exc": {
-                    "lems_source_file": "figure1b_Parameters.xml"
+                    "lems_source_file": "figure1c_Parameters.xml"
                 }
             },
             {
                 "Inh": {
-                    "lems_source_file": "figure1b_Parameters.xml"
+                    "lems_source_file": "figure1c_Parameters.xml"
                 }
             }
         ],
         "synapses": [
             {
                 "rsExc": {
-                    "lems_source_file": "figure1b_Parameters.xml"
+                    "lems_source_file": "figure1c_Parameters.xml"
                 }
             },
             {
                 "rsInh": {
-                    "lems_source_file": "figure1b_Parameters.xml"
+                    "lems_source_file": "figure1c_Parameters.xml"
                 }
             }
         ],

@@ -2,12 +2,12 @@
     
     <!-- 
 
-        This LEMS file has been automatically generated using PyNeuroML v0.5.6 (libNeuroML v0.2.50)
+        This LEMS file has been automatically generated using PyNeuroML v0.5.6 (libNeuroML v0.2.52)
 
      -->
     
     <!-- Specify which component to run -->
-    <Target component="SimJoglekar_figure1b" reportFile="report.SimJoglekar_figure1b.txt"/>
+    <Target component="SimJoglekar_figure1c" reportFile="report.SimJoglekar_figure1c.txt"/>
 
     <!-- Include core NeuroML2 ComponentType definitions -->
     <Include file="Cells.xml"/>
@@ -18,7 +18,7 @@
     <Include file="Joglekar_figure1b.net.nml"/>
     <Include file="Joglekar_figure1b__lems.xml"/>
    
-    <Simulation id="SimJoglekar_figure1b" length="2.0ms" step="0.02ms" target="Joglekar_figure1b" seed="5678">  <!-- Note seed: ensures same random numbers used every run -->
+    <Simulation id="SimJoglekar_figure1c" length="2.0ms" step="0.02ms" target="Joglekar_figure1b" seed="5678">  <!-- Note seed: ensures same random numbers used every run -->
         
         <Display id="Excitatory_6.15_6.9_0_r" title="Plots of Excitatory_6.15_6.9_0_r" timeScale="1ms" xmin="-0.2" xmax="2.2" ymin="-1" ymax="1">
             <Line id="Excitatory_6_15_6_9_0_Exc_r" quantity="Excitatory_6.15_6.9/0/Exc/r" scale="1" color="#d54f33" timeScale="1ms"/>
