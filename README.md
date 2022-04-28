@@ -1,5 +1,7 @@
 # JoglekarEtAl18
 
+[![Continuous build using OMV](https://github.com/OpenSourceBrain/JoglekarEtAl18/actions/workflows/omv-ci.yml/badge.svg)](https://github.com/OpenSourceBrain/JoglekarEtAl18/actions/workflows/omv-ci.yml)
+
 Inter-areal Balanced Amplification Enhances Signal Propagation in a Large-Scale Circuit Model of the Primate Cortex
 Madhura R. Joglekar, Jorge F. Mejia
 s, Guangyu Robert Yang, Xiao-Jing Wang
@@ -70,5 +72,3 @@ https://www.cell.com/neuron/fulltext/S0896-6273(18)30152-1
 - [Original Brian code - generate data](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/OriginalCodes/consciousness.py)
 - [Original Brian code - analyze data](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/OriginalCodes/cons_analyzedata.py)
 - [Original Brian code - visualizataion](https://github.com/OpenSourceBrain/JoglekarEtAl18/blob/master/Brian/OriginalCodes/rishimodel_generatefigs_spiking.py)
-
-[![Build Status](https://travis-ci.org/OpenSourceBrain/JoglekarEtAl18.svg?branch=master)](https://travis-ci.org/OpenSourceBrain/JoglekarEtAl18)
