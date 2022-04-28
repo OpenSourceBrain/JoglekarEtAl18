@@ -2,6 +2,8 @@
 name: Continuous build using OMV
 
 on:
+  schedule:
+    - cron: "1 1 1 */2 *"
   push:
     branches: [ master, development, experimental ]
   pull_request:
