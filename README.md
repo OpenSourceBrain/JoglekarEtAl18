@@ -1,4 +1,4 @@
-# JoglekarEtAl18
+# Joglekar et al. 2018
 
 [![Continuous build using OMV](https://github.com/OpenSourceBrain/JoglekarEtAl18/actions/workflows/omv-ci.yml/badge.svg)](https://github.com/OpenSourceBrain/JoglekarEtAl18/actions/workflows/omv-ci.yml)
 
