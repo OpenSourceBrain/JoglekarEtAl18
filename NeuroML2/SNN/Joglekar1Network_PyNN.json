@@ -1,119 +1,101 @@
 {
     "Joglekar1Network_PyNN": {
-        "version": "NeuroMLlite v0.2.1",
+        "version": "NeuroMLlite v0.5.3",
+        "notes": "Joglekar network: a network with PyNN cells & inputs",
         "parameters": {
             "scale": 0.01
         },
-        "notes": "Joglekar network: a network with PyNN cells & inputs",
-        "cells": [
-            {
-                "excitatory": {
-                    "pynn_cell": "IF_curr_alpha",
-                    "parameters": {
-                        "tau_m": 20.0,
-                        "cm": 0.4,
-                        "v_rest": -70.0,
-                        "v_reset": -60.0,
-                        "v_thresh": -50.0,
-                        "tau_refrac": 2.0,
-                        "i_offset": 0.284
-                    }
+        "cells": {
+            "excitatory": {
+                "parameters": {
+                    "tau_m": 20.0,
+                    "cm": 0.4,
+                    "v_rest": -70.0,
+                    "v_reset": -60.0,
+                    "v_thresh": -50.0,
+                    "tau_refrac": 2.0,
+                    "i_offset": 0.284
+                },
+                "pynn_cell": "IF_curr_alpha"
+            },
+            "inhibitory": {
+                "parameters": {
+                    "tau_m": 10.0,
+                    "cm": 0.2,
+                    "v_rest": -70.0,
+                    "v_reset": -60.0,
+                    "v_thresh": -50.0,
+                    "tau_refrac": 2.0,
+                    "i_offset": 0.294
+                },
+                "pynn_cell": "IF_curr_alpha"
+            }
+        },
+        "input_sources": {
+            "noisyCurrentSourceE": {
+                "parameters": {
+                    "mean": "0.0nA",
+                    "stdev": "0.848528137423857nA",
+                    "noiseDt": "0.1ms",
+                    "delay": "0ms",
+                    "duration": "1000ms"
+                },
+                "lems_source_file": "TestNCS.xml"
+            },
+            "noisyCurrentSourceI": {
+                "parameters": {
+                    "mean": "0.0nA",
+                    "stdev": "0.6000000000000001nA",
+                    "noiseDt": "0.1ms",
+                    "delay": "0ms",
+                    "duration": "1000ms"
+                },
+                "lems_source_file": "TestNCS.xml"
+            }
+        },
+        "regions": {
+            "region1": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "width": 1000.0,
+                "height": 100.0,
+                "depth": 1000.0
+            }
+        },
+        "populations": {
+            "popE": {
+                "size": "int(1600*scale)",
+                "component": "excitatory",
+                "properties": {
+                    "color": ".9 0 0"
+                },
+                "random_layout": {
+                    "region": "region1"
                 }
             },
-            {
-                "inhibitory": {
-                    "pynn_cell": "IF_curr_alpha",
-                    "parameters": {
-                        "tau_m": 10.0,
-                        "cm": 0.2,
-                        "v_rest": -70.0,
-                        "v_reset": -60.0,
-                        "v_thresh": -50.0,
-                        "tau_refrac": 2.0,
-                        "i_offset": 0.294
-                    }
+            "popI": {
+                "size": "int(400*scale)",
+                "component": "inhibitory",
+                "properties": {
+                    "color": "0 0 .9"
+                },
+                "random_layout": {
+                    "region": "region1"
                 }
             }
-        ],
-        "input_sources": [
-            {
-                "noisyCurrentSourceE": {
-                    "lems_source_file": "TestNCS.xml",
-                    "parameters": {
-                        "mean": "0.0nA",
-                        "stdev": "0.848528137423857nA",
-                        "noiseDt": "0.1ms",
-                        "delay": "0ms",
-                        "duration": "1000ms"
-                    }
-                }
+        },
+        "inputs": {
+            "stimE": {
+                "input_source": "noisyCurrentSourceE",
+                "population": "popE",
+                "percentage": 100.0
             },
-            {
-                "noisyCurrentSourceI": {
-                    "lems_source_file": "TestNCS.xml",
-                    "parameters": {
-                        "mean": "0.0nA",
-                        "stdev": "0.6000000000000001nA",
-                        "noiseDt": "0.1ms",
-                        "delay": "0ms",
-                        "duration": "1000ms"
-                    }
-                }
+            "stimI": {
+                "input_source": "noisyCurrentSourceI",
+                "population": "popI",
+                "percentage": 100.0
             }
-        ],
-        "regions": [
-            {
-                "region1": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0,
-                    "width": 1000.0,
-                    "height": 100.0,
-                    "depth": 1000.0
-                }
-            }
-        ],
-        "populations": [
-            {
-                "popE": {
-                    "size": "int(1600*scale)",
-                    "component": "excitatory",
-                    "properties": {
-                        "color": ".9 0 0"
-                    },
-                    "random_layout": {
-                        "region": "region1"
-                    }
-                }
-            },
-            {
-                "popI": {
-                    "size": "int(400*scale)",
-                    "component": "inhibitory",
-                    "properties": {
-                        "color": "0 0 .9"
-                    },
-                    "random_layout": {
-                        "region": "region1"
-                    }
-                }
-            }
-        ],
-        "inputs": [
-            {
-                "stimE": {
-                    "input_source": "noisyCurrentSourceE",
-                    "population": "popE",
-                    "percentage": 100.0
-                }
-            },
-            {
-                "stimI": {
-                    "input_source": "noisyCurrentSourceI",
-                    "population": "popI",
-                    "percentage": 100.0
-                }
-            }
-        ]
+        }
     }
 }

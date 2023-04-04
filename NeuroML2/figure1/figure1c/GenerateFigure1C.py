@@ -121,7 +121,7 @@ for i in range(len(wEErange)):
                                                 duration='2',
                                                 dt='0.02',
                                                 network=new_file,
-                                                recordVariables={'r':{'all':'*'}}
+                                                record_variables={'r':{'all':'*'}}
                                                 )
                                         
             sim.to_json_file('SimJoglekar_figure1c.nmllite.json')

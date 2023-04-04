@@ -158,8 +158,8 @@ sim = Simulation(id='SimJoglekar1Network',
                  duration=duration,
                  dt=dt,
                  seed=1234,
-                 recordTraces={pE.id:[0,1], pI.id:[0,1]},
-                 recordSpikes={pE.id:'*', pI.id:'*'})
+                 record_traces={pE.id:[0,1], pI.id:[0,1]},
+                 record_spikes={pE.id:'*', pI.id:'*'})
                  
 sim.to_json_file()
 

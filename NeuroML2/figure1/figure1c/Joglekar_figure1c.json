@@ -1,136 +1,114 @@
 {
     "Joglekar_figure1b": {
-        "version": "NeuroMLlite v0.2.1",
+        "version": "NeuroMLlite v0.5.3",
+        "notes": "A simple rate model with E and I populations",
         "parameters": {
-            "wee": 257.4999999999996,
+            "wee": 150.0,
             "wei": 214.28571428571428,
-            "wie": -344.99999999999955,
+            "wie": -225.0,
             "wii": -285.7142857142857
         },
-        "notes": "A simple rate model with E and I populations",
-        "cells": [
-            {
-                "Exc": {
-                    "lems_source_file": "figure1c_Parameters.xml"
-                }
+        "cells": {
+            "Exc": {
+                "lems_source_file": "figure1c_Parameters.xml"
             },
-            {
-                "Inh": {
-                    "lems_source_file": "figure1c_Parameters.xml"
-                }
+            "Inh": {
+                "lems_source_file": "figure1c_Parameters.xml"
             }
-        ],
-        "synapses": [
-            {
-                "rsExc": {
-                    "lems_source_file": "figure1c_Parameters.xml"
-                }
+        },
+        "synapses": {
+            "rsExc": {
+                "lems_source_file": "figure1c_Parameters.xml"
             },
-            {
-                "rsInh": {
-                    "lems_source_file": "figure1c_Parameters.xml"
-                }
+            "rsInh": {
+                "lems_source_file": "figure1c_Parameters.xml"
             }
-        ],
-        "regions": [
-            {
-                "Joglekar": {
-                    "x": 0.0,
+        },
+        "regions": {
+            "Joglekar": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "width": 1000.0,
+                "height": 100.0,
+                "depth": 1000.0
+            }
+        },
+        "populations": {
+            "Excitatory_4.0_4.5": {
+                "size": 1,
+                "component": "Exc",
+                "properties": {
+                    "color": "0.8 0 0",
+                    "radius": 10
+                },
+                "relative_layout": {
+                    "region": "Joglekar",
+                    "x": -20.0,
                     "y": 0.0,
-                    "z": 0.0,
-                    "width": 1000.0,
-                    "height": 100.0,
-                    "depth": 1000.0
+                    "z": 0.0
+                }
+            },
+            "Inhibitory_4.0_4.5": {
+                "size": 1,
+                "component": "Inh",
+                "properties": {
+                    "color": "0 0 0.8",
+                    "radius": 10
+                },
+                "relative_layout": {
+                    "region": "Joglekar",
+                    "x": 20.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             }
-        ],
-        "populations": [
-            {
-                "Excitatory_6.15_6.9": {
-                    "size": 1,
-                    "component": "Exc",
-                    "properties": {
-                        "color": "0.8 0 0",
-                        "radius": 10
-                    },
-                    "relative_layout": {
-                        "region": "Joglekar",
-                        "x": -20.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
+        },
+        "projections": {
+            "proj_Excitatory_4.0_4.5_Excitatory_4.0_4.5": {
+                "presynaptic": "Excitatory_4.0_4.5",
+                "postsynaptic": "Excitatory_4.0_4.5",
+                "synapse": "rsExc",
+                "type": "continuousProjection",
+                "delay": 0,
+                "weight": "wee",
+                "random_connectivity": {
+                    "probability": 1
                 }
             },
-            {
-                "Inhibitory_6.15_6.9": {
-                    "size": 1,
-                    "component": "Inh",
-                    "properties": {
-                        "color": "0 0 0.8",
-                        "radius": 10
-                    },
-                    "relative_layout": {
-                        "region": "Joglekar",
-                        "x": 20.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    }
+            "proj_Excitatory_4.0_4.5_Inhibitory_4.0_4.5": {
+                "presynaptic": "Excitatory_4.0_4.5",
+                "postsynaptic": "Inhibitory_4.0_4.5",
+                "synapse": "rsExc",
+                "type": "continuousProjection",
+                "delay": 0,
+                "weight": "wei",
+                "random_connectivity": {
+                    "probability": 1
+                }
+            },
+            "proj_Inhibitory_4.0_4.5_Excitatory_4.0_4.5": {
+                "presynaptic": "Inhibitory_4.0_4.5",
+                "postsynaptic": "Excitatory_4.0_4.5",
+                "synapse": "rsInh",
+                "type": "continuousProjection",
+                "delay": 0,
+                "weight": "wie",
+                "random_connectivity": {
+                    "probability": 1
+                }
+            },
+            "proj_Inhibitory_4.0_4.5_Inhibitory_4.0_4.5": {
+                "presynaptic": "Inhibitory_4.0_4.5",
+                "postsynaptic": "Inhibitory_4.0_4.5",
+                "synapse": "rsInh",
+                "type": "continuousProjection",
+                "delay": 0,
+                "weight": "wii",
+                "random_connectivity": {
+                    "probability": 1
                 }
             }
-        ],
-        "projections": [
-            {
-                "proj_Excitatory_6.15_6.9_Excitatory_6.15_6.9": {
-                    "presynaptic": "Excitatory_6.15_6.9",
-                    "postsynaptic": "Excitatory_6.15_6.9",
-                    "synapse": "rsExc",
-                    "type": "continuousProjection",
-                    "delay": 0,
-                    "weight": "wee",
-                    "random_connectivity": {
-                        "probability": 1
-                    }
-                }
-            },
-            {
-                "proj_Excitatory_6.15_6.9_Inhibitory_6.15_6.9": {
-                    "presynaptic": "Excitatory_6.15_6.9",
-                    "postsynaptic": "Inhibitory_6.15_6.9",
-                    "synapse": "rsExc",
-                    "type": "continuousProjection",
-                    "delay": 0,
-                    "weight": "wei",
-                    "random_connectivity": {
-                        "probability": 1
-                    }
-                }
-            },
-            {
-                "proj_Inhibitory_6.15_6.9_Excitatory_6.15_6.9": {
-                    "presynaptic": "Inhibitory_6.15_6.9",
-                    "postsynaptic": "Excitatory_6.15_6.9",
-                    "synapse": "rsInh",
-                    "type": "continuousProjection",
-                    "delay": 0,
-                    "weight": "wie",
-                    "random_connectivity": {
-                        "probability": 1
-                    }
-                }
-            },
-            {
-                "proj_Inhibitory_6.15_6.9_Inhibitory_6.15_6.9": {
-                    "presynaptic": "Inhibitory_6.15_6.9",
-                    "postsynaptic": "Inhibitory_6.15_6.9",
-                    "synapse": "rsInh",
-                    "type": "continuousProjection",
-                    "delay": 0,
-                    "weight": "wii",
-                    "random_connectivity": {
-                        "probability": 1
-                    }
-                }
-            }
-        ]
+        }
     }
 }

@@ -128,7 +128,7 @@ sim = Simulation(id='SimJoglekar_figure1b',
                                     duration='600',
                                     dt='0.01',
                                     network=new_file,
-                                    recordVariables={'r':{'all':'*'}}
+                                    record_variables={'r':{'all':'*'}}
                                     )
                             
 sim.to_json_file('SimJoglekar_figure1b.nmllite.json')

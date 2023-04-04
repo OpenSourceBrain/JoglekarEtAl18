@@ -1,35 +1,35 @@
 <?xml version="1.0" ?>
-<Lems xmlns="http://www.neuroml.org/lems/0.7.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/lems/0.7.3 https://raw.githubusercontent.com/LEMS/LEMS/development/Schemas/LEMS/LEMS_v0.7.3.xsd">
-  <ComponentType description="NeuroML implementation of PyNN's NoisyCurrentSource: a Gaussian 'white' noise current source. The current amplitude changes at fixed     intervals, with the new value drawn from a Gaussian distribution." extends="baseVoltageDepPointCurrentSpiking" name="noisyCurrentSource">
-    <Parameter dimension="time" name="delay"/>
-    <Parameter dimension="time" name="duration"/>
-    <Parameter dimension="current" name="mean"/>
-    <Parameter dimension="current" name="stdev"/>
-    <Parameter dimension="time" name="noiseDt"/>
-    <EventPort description="Note this is not used here. Will be removed in future" direction="in" name="in"/>
+<Lems xmlns="http://www.neuroml.org/lems/0.7.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/lems/0.7.6 https://raw.githubusercontent.com/LEMS/LEMS/development/Schemas/LEMS/LEMS_v0.7.6.xsd">
+  <ComponentType name="noisyCurrentSource" extends="baseVoltageDepPointCurrentSpiking" description="NeuroML implementation of PyNN's NoisyCurrentSource: a Gaussian 'white' noise current source. The current amplitude changes at fixed     intervals, with the new value drawn from a Gaussian distribution.">
+    <Parameter name="delay" dimension="time" description="Delay before change in current. Current is zero  prior to this."/>
+    <Parameter name="duration" dimension="time" description="Duration for holding current at amplitude. Current is zero after delay + duration."/>
+    <Parameter name="mean" dimension="current" description="Amplitude of current pulse"/>
+    <Parameter name="stdev" dimension="current" description="Standard deviation of current pulse"/>
+    <Parameter name="noiseDt" dimension="time" description="Interval between updates of the current amplitude. Should be a             multiple of the simulation time step. "/>
+    <EventPort name="in" direction="in" description="Note this is not used here. Will be removed in future"/>
     <Dynamics>
-      <StateVariable dimension="current" exposure="i" name="i"/>
-      <StateVariable dimension="time" name="tsince"/>
-      <StateVariable dimension="none" name="U"/>
-      <StateVariable dimension="none" name="V"/>
-      <StateVariable dimension="none" name="randn"/>
-      <TimeDerivative value="1" variable="tsince"/>
+      <StateVariable name="i" dimension="current" exposure="i"/>
+      <StateVariable name="tsince" dimension="time"/>
+      <StateVariable name="U" dimension="none"/>
+      <StateVariable name="V" dimension="none"/>
+      <StateVariable name="randn" dimension="none"/>
+      <TimeDerivative variable="tsince" value="1"/>
       <OnCondition test="t .lt. delay-noiseDt">
-        <StateAssignment value="0" variable="i"/>
-        <StateAssignment value="0" variable="tsince"/>
+        <StateAssignment variable="i" value="0"/>
+        <StateAssignment variable="tsince" value="0"/>
       </OnCondition>
       <OnCondition test="tsince .geq. noiseDt">
-        <StateAssignment value="random(1)" variable="U"/>
-        <StateAssignment value="random(1)" variable="V"/>
-        <StateAssignment value="sqrt(-2*log(U))*cos(2*3.14159265359*V)" variable="randn"/>
-        <StateAssignment value="mean+stdev*randn" variable="i"/>
-        <StateAssignment value="0" variable="tsince"/>
+        <StateAssignment variable="U" value="random(1)"/>
+        <StateAssignment variable="V" value="random(1)"/>
+        <StateAssignment variable="randn" value="sqrt(-2*log(U))*cos(2*3.14159265359*V)"/>
+        <StateAssignment variable="i" value="mean+stdev*randn"/>
+        <StateAssignment variable="tsince" value="0"/>
       </OnCondition>
       <OnCondition test="t .geq. duration + delay">
-        <StateAssignment value="0" variable="i"/>
+        <StateAssignment variable="i" value="0"/>
       </OnCondition>
     </Dynamics>
   </ComponentType>
-  <Component delay="0ms" duration="1000ms" id="noisyCurrentSourceE" mean="0.0nA" noiseDt="0.1ms" stdev="0.848528137423857nA" type="noisyCurrentSource"/>
-  <Component delay="0ms" duration="1000ms" id="noisyCurrentSourceI" mean="0.0nA" noiseDt="0.1ms" stdev="0.6000000000000001nA" type="noisyCurrentSource"/>
+  <Component id="noisyCurrentSourceE" type="noisyCurrentSource" delay="0ms" duration="1000ms" mean="0.0nA" stdev="0.848528137423857nA" noiseDt="0.1ms"/>
+  <Component id="noisyCurrentSourceI" type="noisyCurrentSource" delay="0ms" duration="1000ms" mean="0.0nA" stdev="0.6000000000000001nA" noiseDt="0.1ms"/>
 </Lems>
